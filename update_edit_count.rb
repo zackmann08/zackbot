@@ -6,20 +6,22 @@ require 'HTTParty'
 require 'timeout'
 require './helper'
 
+REGEX = /Total edits.*\n.*<strong>(?<number>[0-9,]*)/
+
 Helper.read_env_vars
 
 puts "Getting count for #{ENV['USERNAME']}"
 
 begin
-  Timeout.timeout(20) do
+  Timeout.timeout(40) do
     @content = HTTParty.get("https://tools.wmflabs.org/supercount/index.php?user=#{ENV['USERNAME']}&project=en.wikipedia")
   end
 rescue Timeout::Error
-  puts 'ERROR: Took longer than 20 seconds to get edit count. Script aborting.'
+  puts 'ERROR: Took longer than 40 seconds to get edit count. Script aborting.'
   exit(0)
 end
 
-results = @content.match(/including deleted\): (?<number>[[[:digit:]],]+)/)
+results = @content.match(REGEX)
 
 puts "Updating count to #{results[:number]}"
 

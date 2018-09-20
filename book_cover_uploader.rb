@@ -8,6 +8,8 @@ require 'open-uri'
 require './helper'
 require 'fileutils'
 
+# File format: <page_name>@!@<url_for_image>
+
 IMAGE_REGEX = /(\s*\|\s*image\s*=)\s/
 
 def comment(title, author, url)
@@ -24,7 +26,7 @@ def comment(title, author, url)
 }}
 
 ==Licensing==
-{{Non-free book cover|image has rationale=yes|category=Biography book cover images}}"
+{{Non-free book cover|image has rationale=yes}}"
 end
 
 Helper.read_env_vars
@@ -64,7 +66,7 @@ books.each_line do |book|
   end
 
   begin
-    @response = client.upload_image("#{title.gsub(':', ' -')}#{extension}", "book_covers/#{title}#{extension}", comment(title, author, url), false)
+    @response = client.upload_image("#{title.gsub(':', ' -')}#{extension}", "book_covers/#{title}#{extension}", 'Adding image', false, comment(title, author, url))
   rescue Exception => e
     puts "- ERROR: #{e}"
     next
@@ -87,4 +89,4 @@ books.each_line do |book|
 end
 
 puts "Cleaning up and deleting all downloaded covers"
-FileUtils.rm_r('book_covers')
+FileUtils.rm_rf('book_covers')
