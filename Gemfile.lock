@@ -1,0 +1,41 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    clipboard (1.1.2)
+    domain_name (0.5.20180417)
+      unf (>= 0.0.5, < 1.0.0)
+    faraday (0.12.2)
+      multipart-post (>= 1.2, < 3)
+    faraday-cookie_jar (0.0.6)
+      faraday (>= 0.7.4)
+      http-cookie (~> 1.0.0)
+    faraday_middleware (0.12.2)
+      faraday (>= 0.7.4, < 1.0)
+    ffi (1.9.25-x64-mingw32)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
+    httparty (0.16.2)
+      multi_xml (>= 0.5.2)
+    mediawiki_api (0.7.1)
+      faraday (~> 0.9, >= 0.9.0)
+      faraday-cookie_jar (~> 0.0, >= 0.0.6)
+      faraday_middleware (~> 0.10, >= 0.10.0)
+    multi_xml (0.6.0)
+    multipart-post (2.0.0)
+    normalize_country (0.2.2)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.5-x64-mingw32)
+
+PLATFORMS
+  x64-mingw32
+
+DEPENDENCIES
+  clipboard
+  ffi
+  httparty
+  mediawiki_api
+  normalize_country
+
+BUNDLED WITH
+   1.16.4

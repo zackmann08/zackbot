@@ -1,4 +1,5 @@
 require 'csv'
+require 'normalize_country'
 
 class Helper
   def self.read_env_vars
@@ -23,5 +24,12 @@ class Helper
     end
     puts result
   end
-
+  
+  def self.to_ioc(country)
+    return 'GBR' if country == 'Great Britain'
+    return 'TCH' if country == 'Czechoslovakia'
+    code = NormalizeCountry(country, to: :ioc)
+    # raise ArgumentError "Invalid country '#{country}' for IOC" if code.nil?
+    code
+  end
 end
