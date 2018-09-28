@@ -6,3 +6,5 @@ gem 'normalize_country'
 
 gem 'clipboard'
 gem 'ffi'
+gem 'rspec'
+gem 'colorize'

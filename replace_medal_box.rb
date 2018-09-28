@@ -15,10 +15,8 @@ end
 TABLE_REGEX = /\{\|\s*\{\{RankedMedalTable[\S\s]*?\|\}/
 
 SKIP = [
-    '2018 Sukma Games',
     'IAAF World Championships in Athletics',
     '1906 Intercalated Games',
-    '2003 World Championships in Athletics',
     "UCI Road World Championships – Men's road race",
     'World Indoor Lacrosse Championship',
     'Tennis at the 1900 Summer Olympics',
@@ -26,30 +24,15 @@ SKIP = [
     'ISSF 25 meter rapid fire pistol',
     "List of women's World Curling champions",
     'Junior World Rally Championship',
-    'Cycling at the 2000 Summer Olympics',
     '1900 Summer Olympics medal table',
     '1907 UCI Track Cycling World Championships',
     '1906 World Weightlifting Championships',
     '1905 World Weightlifting Championships',
-    '1999–2000 FIS Ski Jumping World Cup',
-    '2000 Asian Wrestling Championships',
-    '2000 Asian Weightlifting Championships',
-    '2000 UCI Track Cycling World Championships',
-    '2000 Summer Paralympics medal table',
-    '2001 Asian Wrestling Championships',
-    '2001 Asian Fencing Championships',
-    '2001 Asian Cycling Championships',
-    '2018 European Championships',
-    '2018 European Shotgun Championships',
-    '2018 Oceania Table Tennis Championships',
-    'Golden Grand Prix Ivan Yarygin 2018',
-    'Shooting at the 2018 Central American and Caribbean Games',
-    '2012 Summer Olympics medal table',
     'World Allround Speed Skating Championships'
 ]
 
 # URL = "https://petscan.wmflabs.org/?psid=5880073&format=json"
-URL = "https://petscan.wmflabs.org/?psid=5890114&format=json"
+URL = "https://petscan.wmflabs.org/?psid=5892830&format=json"
 
 Helper.read_env_vars
 
@@ -86,7 +69,7 @@ puts "Total to do: #{results.size}"
       /([A-Z]{3})\}\}\s*\|+\s*(\d+)\s*\|+\s*(\d+)\s*\|+\s*(\d+)/,
       /\|([A-Z]{3}).*\}\}\s*\|+\s*(\d+)\s*\|+\s*(\d+)\s*\|+\s*(\d+)/,
       /[\{\|]([A-Z]{3}).*\}\}[\s\n]*[\|]+\s*(\d+)\s*\|+\s*(\d+)\s*\|+\s*(\d+)/,
-      /(?:[\{\|]([A-Z]{3}).*\}\}|\|([\w\s\.\-]*)\}\})[\s\n]*[\|]+\s*(\d+)\s*\|+\s*(\d+)\s*\|+\s*(\d+)/
+      /(?:[\{\|]\s*([A-Z]{3}).*\}\}|\|([\w\s\.\-]*)\}\})[\s\n]*[\|]+\s*(\d+)\s*\|+\s*(\d+)\s*\|+\s*(\d+)/
   ]
 
   full_text = client.get_wikitext(title).body
@@ -102,6 +85,11 @@ puts "Total to do: #{results.size}"
   if table_text.match?(/ANA/)
     print_link(title)
     print_message('SKIPPING - has ANA')
+    next
+  end
+  if table_text.match?(/Chinese Taipei/)
+    print_link(title)
+    print_message('SKIPPING - has Chinese Taipei')
     next
   end
   
@@ -123,12 +111,13 @@ puts "Total to do: #{results.size}"
     print_message('FAILED - uses {{iflm}}')
     next
   end
-    
+
+  table_text.gsub!(/(background.*\|\s*)(?=\n)/, '\1 0')
   table_text.gsub!(/\s*style="background[\-color]*\s*:\s*#[D-F][A-Z0-9]{5}[;"]*\s*/i, '')
   table_text.gsub!(/<small>.*<\/small>/, '')
+  table_text.gsub!(/(?<=\|\|)[\-\s]*(?=\|\|)/, '0')
   table_text.gsub!(/<!--.*-->/, '')
   table_text.gsub!(/\|\|\|/, '||')
-  table_text.gsub!(/\|\s*\-/, '|0')
   table_text.gsub!("GBR2", "GBR")
   table_text.gsub!(/'''/, '')
   table_text.gsub!(/''/, '')
@@ -218,7 +207,7 @@ puts "Total to do: #{results.size}"
 
   client.edit(title: title, text: full_text, summary: "Converting to use [[Template:Medals table]]", tags: 'AWB')
   puts "- success"
-  sleep 1 + rand(5)
+  sleep 5 + rand(5)
 end
 
 puts "DONE"

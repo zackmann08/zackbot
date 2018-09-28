@@ -2,8 +2,8 @@ require 'csv'
 require 'normalize_country'
 
 class Helper
-  def self.read_env_vars
-    vars = CSV.read('vars.csv')
+  def self.read_env_vars(file = 'vars.csv')
+    vars = CSV.read(file)
     vars.each do |var, value|
       ENV[var] = value
     end
@@ -28,8 +28,29 @@ class Helper
   def self.to_ioc(country)
     return 'GBR' if country == 'Great Britain'
     return 'TCH' if country == 'Czechoslovakia'
+    return 'TPE' if country == 'Chinese Taipei'
+    return 'SCO' if country == 'Scotland'
+    return 'WAL' if country == 'Wales'
+    return 'IOM' if country == 'Isle of Man'
+    return 'NIR' if country == 'Northern Ireland'
+    return 'ENG' if country == 'England'
+    return 'FYG' if country == 'FR Yugoslavia'
+    return 'YUG' if country == 'Yugoslavia'
+    return 'YUG' if country == 'SFR Yugoslavia'
+    return 'URS' if country == 'Soviet Union'
+    return 'FRG' if country == 'West Germany'
+    return 'GDR' if country == 'East Germany'
+    return 'WSM' if country == 'Western Samoa'
     code = NormalizeCountry(country, to: :ioc)
     # raise ArgumentError "Invalid country '#{country}' for IOC" if code.nil?
     code
+  end
+
+  def self.print_link(title)
+    puts "\t#{URI::encode("https://en.wikipedia.org/wiki/#{title}")}"
+  end
+
+  def self.print_message(message)
+    puts "\t#{message}".colorize(:red)
   end
 end
