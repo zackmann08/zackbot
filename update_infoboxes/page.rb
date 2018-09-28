@@ -17,10 +17,6 @@ module Page
     talk_page_text.gsub(talk_page_regex,'')
   end
 
-  
-  # def self.has_infobox?(text)
-  #   text.match?(INFOBOX)
-  # end
 end
 
 
