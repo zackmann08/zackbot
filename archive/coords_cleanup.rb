@@ -10,7 +10,6 @@ require 'fileutils'
 
 # COORDS_REGEX = /\|\s*lat_d\s*=\s*(?<lat>[\d.-]*)\n\|\s*long_d\s*=\s*(?<long>[\d.-]*)\n/
 
-#TODO: There are some where the longitude comes first...
 COORDS_REGEX = /
   \|\s*lat_d\s*=\s*(?<lat_d>[0-9\-.]*)(?:\n*\s*\|\s*lat_m\s*=\s*(?<lat_m>[0-9\-.]*))?(?:\n*\s*\|\s*lat_s\s*=\s*(?<lat_s>[0-9\-.]*))?(?:\n*\s*\|\s*lat_NS\s*=\s*(?<lat_NS>[NSns]*))?\n*
   \|\s*long_d\s*=\s*(?<long_d>[0-9\-.]*)(?:\n*\s*\|\s*long_m\s*=\s*(?<long_m>[0-9\-.]*))?(?:\n*\s*\|\s*long_s\s*=\s*(?<long_s>[0-9\-.]*))?(?:\n*\s*\|\s*long_EW\s*=\s*(?<long_EW>[EWew]*))?\s*\n

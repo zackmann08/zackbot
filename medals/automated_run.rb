@@ -12,6 +12,8 @@ require 'colorize'
 DEBUG = false
 
 SKIPS = [
+    'ICF World Junior and U23 Canoe Slalom Championships',
+    '1900 Summer Olympics medal table',
     'All-time World Games medal table',
     'List of World Aquatics Championships medalists in open water swimming',
     '2014 Palarong Pambansa',
@@ -50,11 +52,15 @@ TABLE_REGEX = /\{\|\s*\{\{RankedMedalTable[\S\s]*?\|\}/
 # 1900-1949
 # URL = "https://petscan.wmflabs.org/?psid=5915410&format=json"
 # ALL articles
-URL = "https://petscan.wmflabs.org/?psid=5859536&format=json"
+# URL = "https://petscan.wmflabs.org/?psid=5859536&format=json"
 # ALL opposite order
 # URL = "https://petscan.wmflabs.org/?psid=5932065&format=json"
 # ALL random
 # URL = "https://petscan.wmflabs.org/?psid=5941492&format=json"
+
+
+# CUSTOM
+URL = "https://petscan.wmflabs.org/?psid=5975260&format=json"
 
 Helper.read_env_vars(file = '../vars.csv')
 

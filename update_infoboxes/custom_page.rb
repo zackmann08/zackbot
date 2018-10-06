@@ -1,10 +1,10 @@
-module Page
+module CustomPage
   class NeedsInfoboxNotFound < StandardError; end
   INFOBOX = /infobox/i
   def self.parse_page(full_text, title, infobox_regex)
     if full_text.match?(infobox_regex)
-      Helper.print_message('HAS INFOBOX')
-      Helper.print_link(title)
+      # Helper.print_message('HAS INFOBOX')
+      # Helper.print_link(title)
       return "Has Infobox"
     else
       return nil

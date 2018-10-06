@@ -1,1 +1,17 @@
 Check pages that use: Template:Infobox requested
+
+TODO:
+# Category:Biography articles without infoboxes
+# EVERYTHING: https://petscan.wmflabs.org/?psid=5972779
+
+https://petscan.wmflabs.org/?psid=5967903
+
+Company & Football, https://petscan.wmflabs.org/?psid=5963157&format=json,,
+India & Musician, https://petscan.wmflabs.org/?psid=5963163&format=json,,
+architecture, https://petscan.wmflabs.org/?psid=5957607&format=json,,
+has infobox requested template, https://petscan.wmflabs.org/?psid=5954167&format=json,,\{\{(?:Infobox\s(?:missing|needed|requested|wanted)|(?:(?:Need[s]*\s*|No|Req)(?:infobox)))+[^\}]*\}\}
+books, https://petscan.wmflabs.org/?psid=5951450&format=json,,
+Novel & journal, https://petscan.wmflabs.org/?psid=5966949&format=json,,
+Rail & School, https://petscan.wmflabs.org/?psid=5975735&format=json,,
+Biography articles, https://petscan.wmflabs.org/?psid=5982172&format=json,,
+Biography articles,https://petscan.wmflabs.org/?psid=5993560&format=json,,

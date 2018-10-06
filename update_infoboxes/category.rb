@@ -1,6 +1,7 @@
 class Category
-  TALK_PAGE = /\|\s*needs-infobox\s*=\s*[^\}\|]*/
-  INFOBOX = /infobox/i
+  # TALK_PAGE = /\|\s*needs-infobox\s*=\s*[^\}\|]*/
+  TALK_PAGE = /\|\s*(?:needs-infobox|infoboxneeded)\s*=\s*[^\}\|]*/
+  INFOBOX = /\{\{[\s\w\n]*infobox/i
 
   attr_accessor :name, :url, :infobox_regex, :talk_page_regex
 
@@ -29,8 +30,8 @@ class Category
       i["title"].gsub('_', ' ')
     end
     puts "Total to do: #{pages.size}".colorize(:blue)
-    pages.each do |title|
-      puts title
+    pages.each_with_index do |title, index|
+      puts "#{index} - #{title}".colorize(:magenta) if index%100 == 0
 
       full_text = client.get_wikitext(title).body
       if Page.parse_page(full_text,title,infobox_regex)
@@ -40,7 +41,7 @@ class Category
           new_text = Page.parse_talk_page(talk_page_text,talk_page_regex)
           client.edit(title: talk_title, text: new_text, summary: "page has an infobox")
           puts "- success".colorize(:green)
-          sleep 5
+          sleep 5 + rand(5)
         rescue Page::NeedsInfoboxNotFound => e
           Helper.print_message('Raised: "NeedsInfoboxNotFound"')
           Helper.print_link(talk_title)

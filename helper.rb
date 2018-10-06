@@ -1,7 +1,36 @@
 require 'csv'
 require 'normalize_country'
+require 'HTTParty'
+
+Dir[File.dirname(__FILE__) + '/helpers/*.rb'].each do |helper|
+  require helper
+end
 
 class Helper
+  class NoResults < StandardError
+    def initialize(url)
+      super("No results were found at #{url}")
+    end
+  end
+
+
+  def self.get_wmf_pages(url)
+    begin
+      Timeout.timeout(120) do
+        @content = HTTParty.get(url)
+      end
+    rescue Timeout::Error
+      puts 'ERROR: Took longer than 120 seconds to get content Script aborting.'
+      exit(0)
+    end
+    
+    results = @content["*"].first['a']['*'].map do |i|
+      i["title"].gsub('_', ' ')
+    end
+    raise NoResults.new(url) if results.empty?
+    results
+  end  
+  
   def self.read_env_vars(file = 'vars.csv')
     vars = CSV.read(file)
     vars.each do |var, value|

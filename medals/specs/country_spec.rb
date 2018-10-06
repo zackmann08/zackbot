@@ -49,9 +49,9 @@ describe 'country' do
   end
   
   describe 'convert_to_ioc' do
-    it 'raises an error nil for invalid IOC nation' do
-      expect{Country.new('').convert_to_ioc('Pluto')}.to raise_error(Country::InvalidIoc, "Could not convert 'Pluto' to IOC")
-    end
+    # it 'raises an error nil for invalid IOC nation' do
+    #   expect{Country.new('').convert_to_ioc('Pluto')}.to raise_error(Country::InvalidIoc, "Could not convert 'Pluto' to IOC")
+    # end
     it 'returns USA for United States' do
       expect(Country.new('').convert_to_ioc('United States')).to eq('USA')
     end

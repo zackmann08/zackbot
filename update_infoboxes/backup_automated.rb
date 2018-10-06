@@ -5,7 +5,7 @@ require 'timeout'
 require '../helper'
 require 'uri'
 require 'colorize'
-require_relative './page'
+require_relative './stom_page'
 
 
 def print_link(title)

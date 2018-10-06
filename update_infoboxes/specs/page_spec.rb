@@ -1,5 +1,5 @@
 require 'rspec'
-require '../page'
+require '../custom_page'
 require '../category'
 
 describe 'page' do
@@ -56,6 +56,7 @@ describe 'page' do
 {{WikiProject Computing|  needs-infobox = yes
 |class=stub|importance=low}}
 {{WikiProject Books|class=stub|needs-infobox=yes}}
+{{WikiProject Books|class=stub|infoboxneeded=yes}}
 {{project|
 |needs-infobox=1st
 }}
@@ -65,6 +66,7 @@ describe 'page' do
 {{WikiProjectBannerShell|1=
 {{WikiProject Perl}}
 {{WikiProject Computing|class=stub|importance=low}}
+{{WikiProject Books|class=stub}}
 {{WikiProject Books|class=stub}}
 {{project|
 }}
