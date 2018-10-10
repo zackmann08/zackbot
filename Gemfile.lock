@@ -14,6 +14,8 @@ GEM
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
     ffi (1.9.25-x64-mingw32)
+    googlebooks (0.0.9)
+      httparty
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     httparty (0.16.2)
@@ -49,6 +51,7 @@ DEPENDENCIES
   clipboard
   colorize
   ffi
+  googlebooks
   httparty
   mediawiki_api
   normalize_country

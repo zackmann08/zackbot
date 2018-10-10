@@ -1,6 +1,17 @@
 require 'csv'
 require 'normalize_country'
 require 'HTTParty'
+require 'mediawiki_api'
+require 'HTTParty'
+require 'timeout'
+require 'uri'
+require 'colorize'
+require 'json'
+require 'fileutils'
+require 'open-uri'
+require 'googlebooks'
+require 'clipboard'
+# encoding: utf-8
 
 Dir[File.dirname(__FILE__) + '/helpers/*.rb'].each do |helper|
   require helper
@@ -13,6 +24,12 @@ class Helper
     end
   end
 
+  def self.get_client
+    Helper.read_env_vars(file = '../vars.csv')
+    client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
+    client.log_in ENV['USERNAME'], ENV['PASSWORD']
+    client
+  end
 
   def self.get_wmf_pages(url)
     begin
@@ -30,6 +47,14 @@ class Helper
     raise NoResults.new(url) if results.empty?
     results
   end  
+  # 
+  # def self.get_category_pages(category)
+  #   category = 'Category:' + category unless category.start_with?('Category:')
+  #   
+  #   @content = HTTParty.get("https://en.wikipedia.org/w/api.php?action=query&format=json&list=categorymembers&cmtitle=#{URI::encode(category)}&cmlimit=500")
+  #   @content['query']['categorymembers'].map{ |member| member['title'].encode('utf-8') }
+  #   
+  # end
   
   def self.read_env_vars(file = 'vars.csv')
     vars = CSV.read(file)

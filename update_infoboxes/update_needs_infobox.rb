@@ -9,7 +9,9 @@ require_relative './category'
 require 'json'
 
 Helper.read_env_vars(file = '../vars.csv')
-
+SKIPS = [
+    'Tangle Lakes'
+]
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
 url = 'https://petscan.wmflabs.org/?psid=5972779&format=json'
@@ -30,8 +32,9 @@ titles = Helper.get_wmf_pages(url)
 TALK_PAGE = /\|\s*(?:needs-infobox|infoboxneeded|infobox|needs-cultivar-infobox|no-infobox|ibox)\s*=\s*[^\}\|]*/
 INFOBOX = /\{\{[\s\w\n]*infobox/i
 #75090 
-start = 75800
+start = 67100
 titles.drop(start).each_with_index do |title, index|
+  next if SKIPS.include?(title)
   puts "#{start +index} - #{title}".colorize(:magenta) if index%100 == 0
   
   full_text = client.get_wikitext(title).body
