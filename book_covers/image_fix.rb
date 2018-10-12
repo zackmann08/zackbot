@@ -5,9 +5,7 @@ require '../helper'
 
 # File format: <page_name>@!@<url_for_image>
 images = <<-TEXT
-Radix (novel)@!@https://images-na.ssl-images-amazon.com/images/I/51GMo94m9dL.jpg
-Rage of a Demon King@!@https://images-na.ssl-images-amazon.com/images/I/51xHm%2BxS6XL.jpg
-Realtime Interrupt@!@https://images-na.ssl-images-amazon.com/images/I/51nfAwBP-DL.jpg
+Nostalgia (novel)@!@https://images-na.ssl-images-amazon.com/images/I/41ySJ%2BDlqYL.jpg
 TEXT
 
 Helper.read_env_vars(file = '../vars.csv')

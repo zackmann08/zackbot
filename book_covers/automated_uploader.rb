@@ -10,10 +10,12 @@ require 'open-uri'
 require 'googlebooks'
 require '../helper'
 SKIPS = [
+    'The Mirror of Simple Souls',
     'Sexual Preference (book)',
-    'A Latin Dictionary'
+    'A Latin Dictionary',
+    'The Recruit (novel)'
 ]
-START = 3400
+START = 0
 
 def comment(title, author, url)
   author += ']]' if author[0,2] == '[[' && author.chars.last(2).join != ']]'
@@ -54,13 +56,13 @@ puts titles.size
 # 4095 without ISBN!
 titles.drop(START).each_with_index do |title, index|
   next if SKIPS.include?(title)
-  puts "#{START + index} - #{title}".colorize(:blue)
+  # puts "#{START + index} - #{title}".colorize(:blue)
   page = Page.new(client.get_wikitext(title).body)
   infobox_templates = page.get_templates(/infobox/i)
   
   image_count = page.raw_text.scan(IMAGE_REGEX).size
   if image_count > 1
-    Helper.print_message("'| image =' appears more than once.")
+    # Helper.print_message("'| image =' appears more than once.")
     next
   end
 
@@ -70,12 +72,12 @@ titles.drop(START).each_with_index do |title, index|
   end
 
   if infobox_templates.empty?
-    Helper.print_message('could not find infobox')
+    # Helper.print_message('could not find infobox')
     next
   end
 
   unless infobox_templates.first.match?(ISBN_REGEX)
-    Helper.print_message('could not find isbn')
+    # Helper.print_message('could not find isbn')
     next
   else
     @isbn = infobox_templates.first.match(ISBN_REGEX)[1]
@@ -101,32 +103,40 @@ titles.drop(START).each_with_index do |title, index|
   #   next
   # end
   # image_url = "https://covers.openlibrary.org/b/id/#{image_id}-L.jpg"
-  
+  # 
   # # GOOGLE BOOKS
-  # google_response = GoogleBooks.search("isbn:#{@isbn.gsub('-','')}")
-  # # puts google_response.inspect
-  # if google_response.total_items==0
-  #   # puts google_response.inspect
-  #   Helper.print_message("Google Books returned no results")
-  #   next
-  # end
-  # image_url = google_response.first.image_link(zoom: 1)
-  # if image_url.nil?
-  #   Helper.print_message("Google Books has no image")
-  #   next
-  # end
+  # 
+  # Must first sanatize the author to just be the name
+  # GoogleBooks.search('intitle:"#{title}"+inauthor:"#{author}"')
+  # 
+  # 
+  google_response = GoogleBooks.search("isbn:#{@isbn.gsub('-','')}")
+  # puts google_response.inspect
+  if google_response.total_items==0
+    # puts google_response.inspect
+    # Helper.print_message("Google Books returned no results")
+    next
+  end
+  image_url = google_response.first.image_link(zoom: 1)
+  if image_url.nil?
+    # Helper.print_message("Google Books has no image")
+    next
+  end
   
   # Archive.org 
-  response = HTTParty.get("https://archive.org/services/book/v1/do_we_have_it/?isbn=#{@isbn}")
-  results = response.parsed_response['ia_identifiers']
-  if results.empty?
-    Helper.print_message('No results from archive.org')
-    next    
-  end
-  id = results.first['ia_identifier']
-  image_url = "https://archive.org/services/img/#{id}"
+  # response = HTTParty.get("https://archive.org/services/book/v1/do_we_have_it/?isbn=#{@isbn}")
+  # results = response.parsed_response['ia_identifiers']
+  # if results.empty?
+  #   Helper.print_message('No results from archive.org')
+  #   next    
+  # end
+  # id = results.first['ia_identifier']
+  # image_url = "https://archive.org/services/img/#{id}"
+
+
+  puts "#{START + index} - #{title}".colorize(:blue)
   
-  filename = "#{title.gsub(/[:\"\?\\\/]/, '')}.jpg"
+  filename = "#{title.gsub(/[:\"\?\\\/\*]/, '')}.jpg"
   open("temp_book_covers/#{filename}", 'wb') do |file|
     file << open(image_url.strip).read
   end
