@@ -9,40 +9,27 @@ require 'fileutils'
 require 'open-uri'
 require 'googlebooks'
 require '../helper'
+require './book'
 SKIPS = [
+    'Orin Starn',
+    'Alpha (anthology series)',
+    'Amir-Abbas Fakhravar',
+    'A Rought Passage',
+    'A Sport from Hollowlog Flat',
     'The Mirror of Simple Souls',
     'Sexual Preference (book)',
     'A Latin Dictionary',
     'The Recruit (novel)'
 ]
 START = 0
+URL = "https://petscan.wmflabs.org/?psid=6028563&format=json"
+include Book
 
-def comment(title, author, url)
-  author += ']]' if author[0,2] == '[[' && author.chars.last(2).join != ']]'
-  "==Summary==
-{{Non-free use rationale book cover
-| Article = #{title.strip}
-| Title   = [[#{title.strip}]]
-| Author  = #{author}
-| Source  = #{url}
-| Use     = Infobox
-}}
-
-==Licensing==
-{{Non-free book cover|image has rationale=yes}}"
-end
-BOOK_PROJECT = "{{WikiProject Books|class=File}}"
-
-ISBN_REGEX = /\|\s*isbn\s*\=\s*([0-9\-]+)/i
-OCLC_REGEX = /\|\s*oclc\s*\=\s*([a-z0-9\-]+)/i
-IMAGE_REGEX = /(\s*\|\s*image\s*=)\s*/
 Helper.read_env_vars(file = '../vars.csv')
 
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
 
-# 
-URL = "https://petscan.wmflabs.org/?psid=6028563&format=json"
 
 Helper.read_env_vars(file = '../vars.csv')
 FileUtils.rm_rf('temp_book_covers')
@@ -50,19 +37,17 @@ Dir.mkdir('temp_book_covers') unless Dir.exist?('temp_book_covers')
 
 titles = Helper.get_wmf_pages(URL)
 puts titles.size
-# titles = ['Just Like That (novel)']
-
-# isbn_count = 0
 # 4095 without ISBN!
+
 titles.drop(START).each_with_index do |title, index|
   next if SKIPS.include?(title)
-  # puts "#{START + index} - #{title}".colorize(:blue)
+  puts "#{START + index} - #{title}".colorize(:blue)
   page = Page.new(client.get_wikitext(title).body)
   infobox_templates = page.get_templates(/infobox/i)
   
   image_count = page.raw_text.scan(IMAGE_REGEX).size
   if image_count > 1
-    # Helper.print_message("'| image =' appears more than once.")
+    Helper.print_message("'| image =' appears more than once.")
     next
   end
 
@@ -76,65 +61,54 @@ titles.drop(START).each_with_index do |title, index|
     next
   end
 
-  unless infobox_templates.first.match?(ISBN_REGEX)
-    # Helper.print_message('could not find isbn')
-    next
-  else
+  @oclc = @isbn = ''
+  if infobox_templates.first.match?(ISBN_REGEX)
     @isbn = infobox_templates.first.match(ISBN_REGEX)[1]
+  elsif infobox_templates.first.match?(OCLC_REGEX)
+    @oclc = infobox_templates.first.match(OCLC_REGEX)[1]
+  else
+    # Helper.print_message('could not find isbn or oclc')
+    next
   end
-
-  # # OPEN LIBRARY
-  # response = HTTParty.get("https://openlibrary.org/api/books?bibkeys=ISBN:#{@isbn}")
-  # result = response.body.delete('var _OLBookInfo = ').chomp(';')
-  # begin 
-  #   parsed_result = JSON.parse(result)
-  # rescue JSON::ParserError
-  #   Helper.print_message("JSON parse caused an error")
+  # unless infobox_templates.first.match?(ISBN_REGEX)
+  #   # Helper.print_message('could not find isbn')
+  #   unless infobox_templates.first.match?(OCLC_REGEX)
+  #   # Helper.print_message('could not find oclc')
+  #     next
+  #   else
+  #     @oclc = infobox_templates.first.match(OCLC_REGEX)[1]
+  #   end
+  # else
+  #   @isbn = infobox_templates.first.match(ISBN_REGEX)[1]
+  # end
+  image_url = nil
+  # if author
+  #   image_url = get_google_book_at(author, title)
+  #   next if image_url.nil?
+  # else
   #   next
   # end
-  # if parsed_result.empty?
-  #   Helper.print_message('No results from open library')
-  #   next
-  # end
-  # begin
-  #   image_id = parsed_result["SN:#{@isbn}"]["thumbilul"].match(/\d+/)
-  # rescue NoMethodError
-  #   Helper.print_message("OpenLibrary returned an invalid response: #{parsed_result}")
-  #   next
-  # end
-  # image_url = "https://covers.openlibrary.org/b/id/#{image_id}-L.jpg"
-  # 
-  # # GOOGLE BOOKS
+  
+  
+  if @isbn
+    image_url = get_google_books(@isbn)
+    image_url = get_open_library(@isbn) if image_url.nil?
+    image_url = get_archive_org(@isbn) if image_url.nil?
+    next if image_url.nil?
+  # elsif @oclc
+  #   puts " - testing OCLC".colorize(:red)
+  #   image_url = get_open_library(@isbn)
+  #   next if image_url.nil?
+  else
+    next    
+  end
+  
+  
+  # # GOOGLE BOOKS 2
   # 
   # Must first sanatize the author to just be the name
   # GoogleBooks.search('intitle:"#{title}"+inauthor:"#{author}"')
-  # 
-  # 
-  google_response = GoogleBooks.search("isbn:#{@isbn.gsub('-','')}")
-  # puts google_response.inspect
-  if google_response.total_items==0
-    # puts google_response.inspect
-    # Helper.print_message("Google Books returned no results")
-    next
-  end
-  image_url = google_response.first.image_link(zoom: 1)
-  if image_url.nil?
-    # Helper.print_message("Google Books has no image")
-    next
-  end
   
-  # Archive.org 
-  # response = HTTParty.get("https://archive.org/services/book/v1/do_we_have_it/?isbn=#{@isbn}")
-  # results = response.parsed_response['ia_identifiers']
-  # if results.empty?
-  #   Helper.print_message('No results from archive.org')
-  #   next    
-  # end
-  # id = results.first['ia_identifier']
-  # image_url = "https://archive.org/services/img/#{id}"
-
-
-  puts "#{START + index} - #{title}".colorize(:blue)
   
   filename = "#{title.gsub(/[:\"\?\\\/\*]/, '')}.jpg"
   open("temp_book_covers/#{filename}", 'wb') do |file|
@@ -144,13 +118,38 @@ titles.drop(START).each_with_index do |title, index|
   begin
     @response = client.upload_image(filename, "temp_book_covers/#{filename}", 'Adding image', false, comment(title, author.strip, image_url))
   rescue Exception => e
-    puts image_url
-    puts Helper.print_message("- ERROR: #{e}")
-    next
+    if e.message.match?(/A file with this name exists already in the shared file repository/)
+      begin
+        Helper.print_message('- WARNING: file already existed. Check this one...')
+        new_filename = filename.gsub('.jpg', ' Book Cover.jpg')
+        @response = client.upload_image(new_filename, "temp_book_covers/#{filename}", 'Adding image', false, comment(title, author.strip, image_url))
+        filename = new_filename
+      rescue Exception => e
+        puts image_url
+        puts Helper.print_message("- ERROR: #{e}")
+        next
+      end
+    else
+      puts image_url
+      puts Helper.print_message("- ERROR: #{e}")
+      next
+    end
+  end
+  
+  
+  
+  if @response.data["warnings"] && @response.data["warnings"]["was-deleted"]
+    begin
+      @response = client.upload_image(filename, "temp_book_covers/#{filename}", 'Adding image', true, comment(title, author.strip, image_url))
+    rescue Exception => e
+      puts image_url
+      puts Helper.print_message("- ERROR: #{e}")
+      next
+    end
   end
 
   unless @response.data["result"] == "Success"
-    puts Helper.print_message("- There are warnings: #{@response.data["warnings"]}")
+    Helper.print_message("- There are warnings: #{@response.data["warnings"]}")
     next
   end
   client.edit(title: "File talk:#{filename}", text: BOOK_PROJECT, summary: 'adding project')
@@ -177,7 +176,5 @@ titles.drop(START).each_with_index do |title, index|
   end
 
   client.edit(title: title, text: page.raw_text, summary: 'Adding image')
-  sleep 5
 end
-# puts "#{isbn_count} pages without ISBN numbers".colorize(:red)
 puts 'DONE'.colorize(:green)

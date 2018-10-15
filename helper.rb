@@ -103,6 +103,10 @@ class Helper
   def self.print_link(title)
     puts "\t#{URI::encode("https://en.wikipedia.org/wiki/#{title}")}"
   end
+  
+  def self.page_history(title)
+    puts "\t#{URI::encode("https://en.wikipedia.org/w/index.php?title=#{title}&action=history")}"
+  end
 
   def self.print_message(message)
     puts "\t#{message}".colorize(:red)
