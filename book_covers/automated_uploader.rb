@@ -43,7 +43,14 @@ titles.drop(START).each_with_index do |title, index|
   next if SKIPS.include?(title)
   puts "#{START + index} - #{title}".colorize(:blue)
   page = Page.new(client.get_wikitext(title).body)
-  infobox_templates = page.get_templates(/infobox/i)
+  infobox_templates = ''
+  begin
+    infobox_templates = page.get_templates(/infobox/i)
+  rescue Page::NoTemplatesFound
+    Helper.print_message("Template not found on page")
+    next    
+  end
+  
   
   image_count = page.raw_text.scan(IMAGE_REGEX).size
   if image_count > 1

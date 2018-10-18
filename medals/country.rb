@@ -18,7 +18,7 @@ class Country
   attr_accessor :valid
   attr_accessor :gold, :silver, :bronze
   attr_accessor :ioc, :raw_name, :name, :note, :event, :raw_row
-  attr_accessor :host, :template, :name_param, :version
+  attr_accessor :host, :template, :name_param, :version, :leading
   
   IOC = /^[A-Z]{3}$/
   MEDALS_REGEX = /\|+[\s']*([\.\d]+)[\s']*\|+[\s']*([\.\d]+)[\s']*\|+[\s']*([\.\d]+)/
@@ -46,6 +46,7 @@ class Country
     end
     
     @host = true if row.match?(/(:?ccccff|ccf)/i)
+    @leading = true if row.match?(/E9D66B/i)
     self.parse_name!    
   end
   
@@ -133,8 +134,8 @@ class Country
     
     # raise InvalidIoc('SKIPS') if SKIPS.include?(@ioc)
     return '' if ioc.nil?
-    justify = 1
-    ioc_just = 1
+    justify = 2
+    ioc_just = 2
     result = ''
     result += " | gold_#{@ioc.ljust(ioc_just)} = #{@gold.ljust(justify)}"
     result += " | silver_#{@ioc.ljust(ioc_just)} = #{@silver.ljust(justify)}"
@@ -142,6 +143,7 @@ class Country
     result += " | name_#{@ioc.ljust(ioc_just)} = #{@name_param}" unless @name_param.empty?
     result += " | note_#{@ioc} = #{note_param}" unless note_param.empty?
     result += " | host_#{@ioc} = yes " if @host
+    result += " | leading_#{@ioc} = yes " if @leading
     # result += " | note_#{@ioc} = {{double-dagger}}" if @raw_name.include?('‡')
     result += " | skip_#{@ioc} = yes" if SKIPS.include?(@ioc)
     result += "\n" unless result.empty?

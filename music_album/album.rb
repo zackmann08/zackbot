@@ -1,5 +1,11 @@
 # encoding: utf-8
 require '../helper'
+
+# TODO: take care of Extra chronology
+# Find {{extra chronology|....}} and remove it from the template
+# procceed as usual
+# parse the extra chronology text
+
 module Album
   class UnresolvedCase < StandardError; end
   class NoTemplatesFound < StandardError; end
@@ -60,8 +66,8 @@ module Album
     return album.gsub(/(.*)#{BREAK}/, '\1'), year.tr('()', '')
   end
   
-  LAST_ALBUM = /Last album\s*=(.*)/
-  NEXT_ALBUM = /Next album\s*=(.*)/
+  LAST_ALBUM = /Last album\s*=(.*(?:<ref>[\w\W]*?<\/ref>.*)|.*)/
+  NEXT_ALBUM = /Next album\s*=(.*(?:<ref>[\w\W]*?<\/ref>.*)|.*)/
   
   def parse_album(page)
     templates = page.scan(/(?=\{\{(?:#{INFOBOX_REGEX.to_s}))(\{\{(?>[^{}]++|\g<1>)*}})/i).flatten
@@ -72,7 +78,7 @@ module Album
       
       template.gsub!(/\|\s*#{WIKIPROJECT}?\s*\n*\|/, "\n|")
 
-      if template.match?(/\{\{\s*(?:#{INFOBOX_REGEX})\s*\|/) && !template.match?(/\{\{\s*(?:#{INFOBOX_REGEX})\s*\n\s*\|/)
+      if template.match?(/\{\{\s*(?:#{INFOBOX_REGEX})\s*\|/i) && !template.match?(/\{\{\s*(?:#{INFOBOX_REGEX})\s*\n\s*\|/i)
         template = fix_pipes(template)
       end
 
@@ -84,8 +90,9 @@ module Album
       next_data = parse_album_year(template.match(NEXT_ALBUM)[1]) if template.match?(NEXT_ALBUM)
       
       template.gsub!(/<!--.*-->/,        '')
-      template.gsub!(/#{INFOBOX_REGEX}/, 'subst:Infobox Album')
-      template.gsub!(/\{\{\s*Extra chronology/, '{{subst:Extra chronology')
+      template.gsub!(/#{INFOBOX_REGEX}/i, 'subst:Infobox Album')
+      template.gsub!(/{{\s*singles/i, '{{subst:singles')
+      # template.gsub!(/\{\{\s*Extra chronology/, '{{subst:Extra chronology')
       
       template.gsub!(/[Ii]talic title(\s*)=/, 'italic_title\1=')
       template.gsub!(/Name(\s*)=/,       'name\1=')
@@ -119,11 +126,14 @@ module Album
       template.insert(-3, "| prev_title=#{last_data[0]}\n| prev_year=#{last_data[1]}\n") if last_data
       template.insert(-3, "| next_title=#{next_data[0]}\n| next_year=#{next_data[1]}\n") if next_data
       
-      template.each_line do |line|
-        template.gsub(line, "|#{line}") unless (line.start_with?('|') || line.start_with?('{{') || line.start_with?('}}'))
-        template.gsub(line, line.slice(-1)) if (line.end_with?("|\n") && !line.include?('{{'))
+      new_temp = template.each_line.map do |line|
+        line = "|#{line}" unless (line.match?(/^\s*\|/) || line.start_with?('*') || line.start_with?('{{') || line.start_with?('}}'))
+        line.slice!(-1) if (line.end_with?("|\n") && !line.include?('{{'))
+        line
       end
+      template = new_temp.join("\n")
       template.gsub!(/\n\n/, "\n")
+      template.gsub!(/\n\|\s*\n/, "\n")
       page.gsub!(old_text, template)
     end
         

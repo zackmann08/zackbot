@@ -32,7 +32,7 @@ titles = Helper.get_wmf_pages(url)
 TALK_PAGE = /\|\s*(?:needs-infobox|infoboxneeded|infobox|needs-cultivar-infobox|no-infobox|ibox)\s*=\s*[^\}\|]*/
 INFOBOX = /\{\{[\s\w\n]*infobox/i
 #75090 
-start = 0
+start = 22000
 titles.drop(start).each_with_index do |title, index|
   next if SKIPS.include?(title)
   puts "#{start +index} - #{title}".colorize(:magenta) if index%100 == 0

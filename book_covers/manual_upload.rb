@@ -17,7 +17,7 @@ include Book
 JUST_UPLOAD = false
 
 images = <<-TEXT
-Antifa: The Anti-Fascist Handbook@!@https://the1a.org/wp-content/uploads/2017/08/ANTIFA-cover-image-640x1024.jpg
+The Dark Wind@!@http://ehillerman.unm.edu/sites/default/files/files/pictures/A14425%20874744_0.jpg
 TEXT
 
 Helper.read_env_vars(file = '../vars.csv')
@@ -25,7 +25,6 @@ Helper.read_env_vars(file = '../vars.csv')
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
 
-Helper.read_env_vars(file = '../vars.csv')
 FileUtils.rm_rf('temp_book_covers')
 Dir.mkdir('temp_book_covers') unless Dir.exist?('temp_book_covers')
 

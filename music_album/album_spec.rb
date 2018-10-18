@@ -129,6 +129,22 @@ describe 'parse_album_year' do
     expect(parse_album_year(text)).to eq(["[[Beautiful Lies You Could Live In]]", "1971"])
   end
   
+  it 'works for references' do 
+    text = <<~TEXT
+"[[Animal Arithmetic]]"<ref>{{cite web
+ |url         = foo
+ |title = bar
+}}</ref><br/>(2010)
+TEXT
+    album = <<~TEXT
+"[[Animal Arithmetic]]"<ref>{{cite web
+ |url         = foo
+ |title = bar
+}}</ref>
+TEXT
+    expect(parse_album_year(text)).to eq([album.strip, "2010"])
+  end
+  
   # it 'aaaaa' do 
   #   text = 'aaa'
   #   expect(parse_album_year(text)).to eq(["", ""])
@@ -236,7 +252,7 @@ TEXT
   end 
   it 'works with trailing pipes' do
     text = <<~TEXT
-{{Infobox album | <!-- See Wikipedia:WikiProject_Albums -->
+{{infobox album | <!-- See Wikipedia:WikiProject_Albums -->
  Released    = November 16, 2009 |
   Recorded    =  |
   Genre       = [[Hip hop music|Hip hop]]<br>[[Trip hop]]<br>[[Ethiopian music]]<br>[[Instrumental hip hop]] |
@@ -377,7 +393,7 @@ TEXT
     TEXT
     expect(parse_album(text)).to eq(result)
   end
-  it "raises error for flatlist ending pipes" do
+  it "works for flatlist ending pipes" do
     text = <<~TEXT
 {{Infobox album <!-- See Wikipedia:WikiProject_Albums -->
 | Name        = Endless Sleep Chapter 46
@@ -405,13 +421,82 @@ TEXT
 
   it "works for special case #1" do
     text = <<~TEXT
-
+{{Infobox album
+| Name        = Go Do
+| Type        = ep
+| Artist      = [[Jón Þór Birgisson|Jónsi]]
+| Cover       = Go Do cover.jpg
+| Released    = 22 March 2010
+| Last album  = [[LAST]]<ref>{{cite web
+ |url         = testing again
+ |title = another title
+}}</ref><br/>(2005)
+| This album  = '''Go Do'''
+| Next album  = "[[Animal Arithmetic]]"<ref>{{cite web
+ |url         = foo
+ |title = bar
+}}</ref><br/>(2010)
+|misc={{External music video|{{YouTube|T6HjT4SQKJI|"Go Do"}} }}
+}}
     TEXT
     result = <<~TEXT
-
-    TEXT
+{{subst:Infobox Album
+| name        = Go Do
+| type        = ep
+| artist      = [[Jón Þór Birgisson|Jónsi]]
+| cover       = Go Do cover.jpg
+| released    = 22 March 2010
+| This album  = '''Go Do'''
+|misc={{External music video|{{YouTube|T6HjT4SQKJI|"Go Do"}} }}
+| prev_title=[[LAST]]<ref>{{cite web
+ |url         = testing again
+ |title = another title
+}}</ref>
+| prev_year=2005
+| next_title="[[Animal Arithmetic]]"<ref>{{cite web
+ |url         = foo
+ |title = bar
+}}</ref>
+| next_year=2010
+}}
+TEXT
     expect(parse_album(text)).to eq(result)
-  # end
+  end
+
+  it "works for special case #2" do
+    text = <<~TEXT
+{{Infobox Album | <!-- See Wikipedia:WikiProject_Albums -->
+|  Name        = Greetings From Tennessee | 
+  Cover       = Greetings_from_Tennessee_by_Superdrag_Cover.jpg |
+  Type        = [[Album]] |
+  Artist      = [[Superdrag]]  |
+  Released    = June 27, 2001|
+  Genre       = [[Rock and roll|Rock]]/[[Punk rock|Punk]]|
+  Length      = 35:25  |
+  Label       = [[Two Children Records]] and [[Arena Rock Recording Co.]] |
+Last album  = ''[[The Rock Soldier CD]]'' <br /> (2000) |
+This album  = '''''Greetings From Tennessee'''''<br /> (2001) |
+Next album  = ''[[Last Call For Vitriol]]''<br /> (2002) |}} 
+TEXT
+    result = <<~TEXT
+{{subst:Infobox Album 
+|  name        = Greetings From Tennessee
+|  cover       = Greetings_from_Tennessee_by_Superdrag_Cover.jpg
+|  type        = [[Album]]
+|  artist      = [[Superdrag]]
+|  released    = June 27, 2001
+|  genre       = [[Rock and roll|Rock]]/[[Punk rock|Punk]]
+|  length      = 35:25
+|  label       = [[Two Children Records]] and [[Arena Rock Recording Co.]]
+|This album  = '''''Greetings From Tennessee'''''<br /> (2001)
+| prev_title=[[The Rock Soldier CD]]
+| prev_year=2000
+| next_title=[[Last Call For Vitriol]]
+| next_year=2002
+}} 
+TEXT
+    expect(parse_album(text)).to eq(result)
+  end
   # 
   # it "works for special case #1" do
   #   text = <<~TEXT

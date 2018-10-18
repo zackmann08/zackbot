@@ -8,6 +8,10 @@ response.data["categorymembers"].map{ |p| p["title"]}
 
 response = client.query(list: 'categorymembers', cmtitle: 'Category:Pages using deprecated coordinates format', cmlimit: 1000)
 
+# Notes
+- If getting `Encoding::CompatibilityError` the solution is to force the encoding to be UTF-8
+  * `text.force_encoding('UTF-8')`
+
 # TODOs
 - Figure out how to capture links in a template if they include "|". 
   * I.E. "| name = [[John Smith|Johny boy]] | location = [[Utah]]" should capture all of the name and stop before location

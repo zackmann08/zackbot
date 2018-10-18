@@ -101,7 +101,7 @@ class Helper
   end
 
   def self.print_link(title)
-    puts "\t#{URI::encode("https://en.wikipedia.org/wiki/#{title}")}"
+    puts "\t#{"https://en.wikipedia.org/wiki/#{title.gsub(/\s/,'_')}"}"
   end
   
   def self.page_history(title)

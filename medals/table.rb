@@ -138,15 +138,21 @@ module Table
 
 " + result
     end
+ #   result = "{{Medals table
+ # | caption        = #{caption}
+ # | host           = #{host}
+ # | flag_template  = #{template}
+ # | event          = #{event}
+ # | team           = #{team}
+# " + result
    result = "{{Medals table
- | caption        = #{caption}
- | host           = #{host}
- | flag_template  = #{template}
- | event          = #{event}
- | team           = #{team}
+ | caption    = #{caption}
+ | team       = Sport
+ | hide_rank  = yes
+ | leading    = 
 " + result
     
-    result.gsub!(/\{\{[Ff]lag\|/, '{{flagteam|')
+    # result.gsub!(/\{\{[Ff]lag\|/, '{{flagteam|')
     
     result += "}}"
     result

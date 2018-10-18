@@ -11,18 +11,21 @@ include Album
 
 text = <<~TEXT
 {{Infobox album <!-- See Wikipedia:WikiProject_Albums -->
-| Name       = FabricLive.68
-| Type       = Compilation
-| Misc        = 
+| Name        = Gamma 1
+| Last album  = ''[[LAST]]''<br />(1995)
+| This album  = '''''Gamma 1'''''<br />(1996)
+| Next album  = ''[[Gamma 2]]''<br />(1997)
+| Misc        =
 {{Extra chronology
-  | Artist = [[Fabric discography|FabricLive]] 
-  | Type = Compilation
-  | Last album = ''[[FabricLive.67]]''<br/>(2013)
-  | This album = '''FabricLive.68'''<br/>(2013)
-  | Next album = ''[[FabricLive.69]]''<br/>(2013)}}
+   | Artist      = [[Ronnie Montrose]]
+   | Type        = studio
+   | Last album  = ''[[Open Fire (album)|Open Fire]]''<br />(1978)
+   | This album  = '''''Gamma 1'''''<br />(1979)
+   | Next album  = ''[[Gamma 2]]''<br />(1980)
+  }}
 }}
 TEXT
-
+#  {{small|(Bootleg)}}
 
 begin
   text = parse_album(text).strip

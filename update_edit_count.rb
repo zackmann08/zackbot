@@ -5,8 +5,6 @@
 # https://xtools.readthedocs.io/en/stable/api/user.html#simple-edit-count
 # Get all the templates that I have created and then filter out the ones that are sandbox, etc. 
 
-
-
 require 'mediawiki_api'
 require 'HTTParty'
 require 'timeout'
@@ -28,6 +26,7 @@ end
 
 EDIT_COUNT_URL  = 'https://en.wikipedia.org/w/api.php?action=query&list=users&usprop=editcount&ususers=Zackmann08&format=json'
 TEMPLATES_URL   = 'https://xtools.wmflabs.org/api/user/pages/en.wikipedia/Zackmann08/10'
+MODULES_URL     = 'https://xtools.wmflabs.org/api/user/pages/en.wikipedia/Zackmann08/828'
 CATEGORIES_URL  = 'https://xtools.wmflabs.org/api/user/pages_count/en.wikipedia/Zackmann08/14'
 FILES_URL       = 'https://xtools.wmflabs.org/api/user/pages_count/en.wikipedia/Zackmann08/6'
 # URL = "https://tools.wmflabs.org/supercount/index.php?user=#{ENV['USERNAME']}&project=en.wikipedia"
@@ -62,5 +61,22 @@ files = get_content(FILES_URL)
 count = files["counts"]["count"]
 puts "Updating file count to #{count}"
 client.edit(title: "User:#{ENV['USERNAME']}/file count", text: count)
+
+modules = get_content(MODULES_URL)
+count = modules["pages"].reject!{ |page|
+  (page['page_title'].include?('/doc')||
+      page['page_title'].include?('sandbox') ||
+      page['page_title'].include?('/testcase')
+  )}.size
+puts "Updating modules count to #{count}"
+client.edit(title: "User:#{ENV['USERNAME']}/module count", text: count)
+
+
+text = client.get_wikitext('Wikipedia:List of Wikipedians by number of edits/1–1000').body
+rank = text.scan(/(\d*)\s*\n*\|\s*\[\[User:Zackmann08\|Zackmann08\]\]/).flatten.first
+puts "Updating rank to #{rank}"
+client.edit(title: "User:#{ENV['USERNAME']}/rank", text: rank)
+
+
 
 
