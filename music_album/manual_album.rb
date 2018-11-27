@@ -10,20 +10,30 @@ require './album'
 include Album
 
 text = <<~TEXT
-{{Infobox album <!-- See Wikipedia:WikiProject_Albums -->
-| Name        = Gamma 1
-| Last album  = ''[[LAST]]''<br />(1995)
-| This album  = '''''Gamma 1'''''<br />(1996)
-| Next album  = ''[[Gamma 2]]''<br />(1997)
-| Misc        =
-{{Extra chronology
-   | Artist      = [[Ronnie Montrose]]
-   | Type        = studio
-   | Last album  = ''[[Open Fire (album)|Open Fire]]''<br />(1978)
-   | This album  = '''''Gamma 1'''''<br />(1979)
-   | Next album  = ''[[Gamma 2]]''<br />(1980)
-  }}
+{{Infobox single <!-- See Wikipedia:WikiProject_Songs -->
+| Name           = 'Coz I'm Free
+| Cover          = 'Coz_I'm_Free_by_Christine_Anu.jpg
+| Caption        = CD single cover
+| Artist         = [[Christine Anu]]
+| from Album     = '''[[Come My Way (Christine Anu album)|Come My Way]]''' 
+| A-side         = "'Coz I'm Free"
+| B-side         = 
+| Released       = April 2001
+| Format         = [[CD Single]]
+| Recorded       = Megaphon Studios, Sydney, 2000
+| Genre          = [[Pop music|Pop]]
+| Length         = 3:56
+| Label          = [[Mushroom Records]]
+| Writer         = [[Christine Anu]], [[Stuart Crichton]], [[Andy White (singer-songwriter)|Andy White]]
+| Producer       = Stuart Crichton
+| Certification  = 
+| Chronology     = [[Christine Anu]] singles
+| Last single    = "[[Jump to Love]]" <br>(2000)
+| This single    = "''''Coz I'm Free'''" <br>(2001)
+| Next single    = "[[Talk About Love]]" <br>(2003)
+| Misc           = 
 }}
+
 TEXT
 #  {{small|(Bootleg)}}
 
@@ -33,10 +43,10 @@ rescue Page::NoTemplatesFound => e
   puts text
   Helper.print_message('Template not found on page')
   exit(1)
-rescue Page::UnresolvedCase => e
-  puts text
-  Helper.print_message('Hit an unresolved case')
-  exit(1)
+# rescue Page::UnresolvedCase => e
+#   puts text
+#   Helper.print_message('Hit an unresolved case')
+#   exit(1)
 end
 
 puts text

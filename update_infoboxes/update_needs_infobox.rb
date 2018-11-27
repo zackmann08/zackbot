@@ -10,10 +10,16 @@ require 'json'
 
 Helper.read_env_vars(file = '../vars.csv')
 SKIPS = [
-    'Tangle Lakes'
+    'Anthony Wagner',
+    'Tangle Lakes',
+    'Bernd Jakubowski',
+    'Karl-Heinz Marotzke',
+    'Spalding v Gamage',
+    'St. Johns Light'
 ]
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
+# client.log_in 'ZackBot', ENV['PASSWORD']
 url = 'https://petscan.wmflabs.org/?psid=5972779&format=json'
 
 titles = Helper.get_wmf_pages(url)
@@ -32,8 +38,10 @@ titles = Helper.get_wmf_pages(url)
 TALK_PAGE = /\|\s*(?:needs-infobox|infoboxneeded|infobox|needs-cultivar-infobox|no-infobox|ibox)\s*=\s*[^\}\|]*/
 INFOBOX = /\{\{[\s\w\n]*infobox/i
 #75090 
-start = 22000
+start = 65500
+# count = 0
 titles.drop(start).each_with_index do |title, index|
+  # break if count>100
   next if SKIPS.include?(title)
   puts "#{start +index} - #{title}".colorize(:magenta) if index%100 == 0
   
@@ -43,7 +51,9 @@ titles.drop(start).each_with_index do |title, index|
     begin
       talk_page_text = client.get_wikitext(talk_title).body
       new_text = CustomPage.parse_talk_page(talk_page_text,TALK_PAGE)
+      # client.edit(title: talk_title, text: new_text, summary: "page has an infobox ([[Wikipedia:Bots/Requests for approval/ZackBot 10]])")
       client.edit(title: talk_title, text: new_text, summary: "page has an infobox")
+      # count += 1
       puts "- success".colorize(:green)
       # sleep 5 + rand(5)
     rescue CustomPage::NeedsInfoboxNotFound => e

@@ -5,7 +5,7 @@ require '../helper'
 
 # File format: <page_name>@!@<url_for_image>
 images = <<-TEXT
-The Dark Wind@!@http://ehillerman.unm.edu/sites/default/files/files/pictures/A14425%20874744_0.jpg
+Lair (novel)@!@https://images-na.ssl-images-amazon.com/images/I/71MTnN%2BwrML.jpg
 TEXT
 
 Helper.read_env_vars(file = '../vars.csv')

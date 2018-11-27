@@ -10,7 +10,7 @@ Helper.read_env_vars
 
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
-# url = 'https://petscan.wmflabs.org/?psid=6082680&format=json'
+url = 'https://petscan.wmflabs.org/?psid=6428725&format=json'
 
 titles = Helper.get_wmf_pages(url)
 
@@ -19,10 +19,10 @@ titles.each do |title|
   puts title.colorize(:blue)
   page = client.get_wikitext(title).body
   
-  page.gsub!(/\{\{MusicBrainz.*\|\s*id=/i, '{{MusicBrainz release|mbid=')
+  page.gsub!(/\{\{\s*Extra track listing/i, '{{subst:Extra track listing')
   
   client.edit(title: title, text: page, summary: 'fixing deprecated params')
-  sleep 8 + rand(5)
   puts ' - success'.colorize(:green)
+  sleep 8 + rand(5)
 end
 puts 'DONE!'

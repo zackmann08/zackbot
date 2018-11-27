@@ -23,7 +23,8 @@ module Table
     caption_results = string.match(/\|\s*caption\s*\=([^\|\}]*)/)
     caption = caption_results[1] if caption_results
     team = ''
-    team_results = string.match(/\|\s*team\s*\=([^\|\}]*)/)
+    # team_results = string.match(/\|\s*team\s*\=([^\|\}]*)/)
+    team_results = string.match(/\|\s*type\s*\=([^\|\}]*)/)
     team = team_results[1] if team_results
     
     raise UnresolvedCase.new('NTS') if string.match?(/\{\{nts\|/)
@@ -45,9 +46,9 @@ module Table
     string.gsub!(/USSR/, 'Soviet Union')
     string.gsub!(/\{\{\s*Soviet Union\s*\}\}/, '{{flag|Soviet Union}}')
     string.gsub!(/\{\{nts\|(\d*)\}\}/, '\1')
-    string.gsub!(/bgcolor\s*=\s*[0-9A-F]{6}\s*\|/i, '')
-    string.gsub!(/(background.*\|\s*)(?=\n)/, '\1 0')
-    string.gsub!(/\s*style="background[\-color]*\s*:\s*#[D-F][A-Z0-9]{5}[;"]*\s*\|*/i, '')
+    # string.gsub!(/bgcolor\s*=\s*[0-9A-F]{6}\s*\|/i, '')
+    # string.gsub!(/(background.*\|\s*)(?=\n)/, '\1 0')
+    # string.gsub!(/\s*style="background[\-color]*\s*:\s*#[D-F][A-Z0-9]{5}[;"]*\s*\|*/i, '')
     string.gsub!(/(?<=\|\|)[\-\s]*(?=\|\|)/, '0')
     string.gsub!(/\|\|\|/, '||')
     string.gsub!(/\{\{([A-Z]{3}\|\d{4})\}\}/, '{{flag|\1}}') unless custom
@@ -113,7 +114,7 @@ module Table
 
     iocs = countries.map{|c| c.ioc}
     duplicates = iocs.select{ |ioc| iocs.count(ioc) > 1 }
-    puts duplicates.inspect
+    # puts duplicates.inspect
     raise DuplicateIocs.new(duplicates) unless (duplicates.nil? || duplicates.empty?)
     
     countries.each do |country|
@@ -125,6 +126,7 @@ module Table
     host_results = result.match(/host\_([A-Z]{3}|\d+)/)
     host = host_results[1] if host_results
 
+    
     # Never set the template as flag or flagicon
     template = '' if (template.match?(/flagicon/i) || template.downcase.strip == 'flag')
     template = 'flagcountry' if template.empty?
@@ -138,6 +140,10 @@ module Table
 
 " + result
     end
+    leading = ''
+    leading = 'yes' if result.match(/leading\_(\d+)/)
+    hide_totals = ''
+    hide_totals = "\n | hide_totals = yes" if team == 'Gender'
  #   result = "{{Medals table
  # | caption        = #{caption}
  # | host           = #{host}
@@ -146,10 +152,10 @@ module Table
  # | team           = #{team}
 # " + result
    result = "{{Medals table
- | caption    = #{caption}
- | team       = Sport
- | hide_rank  = yes
- | leading    = 
+ | caption     = #{caption}
+ | team        = #{team}
+ | hide_rank   = yes
+ | leading     = #{leading}#{hide_totals}
 " + result
     
     # result.gsub!(/\{\{[Ff]lag\|/, '{{flagteam|')

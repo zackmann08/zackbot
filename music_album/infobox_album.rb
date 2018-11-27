@@ -10,7 +10,8 @@ require './album'
 include Album
 
 SKIPS = [
-    'Hakkin no Yoake'
+    'Hakkin no Yoake',
+    "Sucker M.C.'s"
 ]
 
 # TODO check for proper use of the template AFTER converting. 
@@ -22,8 +23,10 @@ Helper.read_env_vars(file = '../vars.csv')
 
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
+# client.log_in 'ZackBot', ENV['PASSWORD']
 # ALL pages in category
-# url = 'https://petscan.wmflabs.org/?psid=6112363&format=json'
+# url = 'https://petscan.wmflabs.org/?psid=6465241&format=json'
+url = 'https://petscan.wmflabs.org/?psid=6488551&format=json'
 
 # Only Infobox Album
 # url = 'https://petscan.wmflabs.org/?psid=6112476&format=json'
@@ -31,18 +34,25 @@ client.log_in ENV['USERNAME'], ENV['PASSWORD']
 # Infobox album AND singles
 # url = 'https://petscan.wmflabs.org/?psid=6150855&format=json'
 # Infobox album and OPTIONAL singles (can be there, not required)
-url = 'https://petscan.wmflabs.org/?psid=6150867&format=json'
+# url = 'https://petscan.wmflabs.org/?psid=6185992&format=json'
 # Infobox album and one of the other templates
 # url = 'https://petscan.wmflabs.org/?psid=6150870&format=json'
 
-titles = Helper.get_wmf_pages(url)
+# Infobox single
+# url = 'https://petscan.wmflabs.org/?psid=6352308&format=json'
 
+titles = Helper.get_wmf_pages(url)
+# titles.reverse!
+
+count = 0 
 puts titles.size
 titles.each do |title|
+  # break if count>50
   next if SKIPS.include?(title)
   puts title.colorize(:blue)
   text = client.get_wikitext(title).body
   text.force_encoding('UTF-8')
+  old = text.dup
   begin
     text = parse_album(text)
   rescue Page::NoTemplatesFound, Album::NoTemplatesFound
@@ -58,14 +68,20 @@ titles.each do |title|
   end
   
   # puts text.colorize(:red)
+  if text == old
+    Helper.print_link(title)
+    Helper.print_message('NO CHANGE')
+    next
+  end
 
+  # client.edit(title: title, text: text, summary: 'fixing deprecated params, [[Wikipedia:Bots/Requests_for_approval/ZackBot_11|ZackBot 11 Trial]]')
   client.edit(title: title, text: text, summary: 'fixing deprecated params')
-
+  count += 1
   Helper.page_history(title)
   puts ' - success'.colorize(:green)
   # puts "waiting: "
   # continue = gets
   # puts continue
-  sleep 8 + rand(5)
+  sleep 10 + rand(5)
 end
 puts 'DONE!'

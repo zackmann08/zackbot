@@ -111,4 +111,36 @@ class Helper
   def self.print_message(message)
     puts "\t#{message}".colorize(:red)
   end
+  
+  
+  ARGUMENT_REGEX = /((?:\||\A) *\K[^{\[|]*(?:(?:({{(?:[^{}]*+|\g'2')*}})|(\[{1,2}(?:[^\[\]]*+|\g'3')*\]{1,2}))[^{\[|]*)*)/
+  
+  # ARGS = /\s*([\w\s\-]*)=\s*(.*)\n*(?:\}\})?/
+  ARGS = /\s*([\w\s\-]*)=\s*([\w\W]*)\n*(?:\}\})?/
+  def self.parse_template(text)
+    text = text.strip[2..-3]
+    # puts "##{text}#"
+    results = Hash.new('')
+    args = text.split(/\n\|/).drop(1) 
+    # args = text.split(/\s*\|\s*(?![^{\[]*[\]}])/).drop(1)
+    args = text.scan(ARGUMENT_REGEX).drop(1)
+    
+    args.each_with_index do |arg, index|
+      arg = arg.first.strip
+      arg = arg[1..-1] if arg[0] == '|'
+      if arg.include?('=')
+        # puts "##{arg}#"
+        param = arg.match(ARGS)[1].strip
+        value = arg.match(ARGS)[2].strip
+        value.gsub!(/<!--.*-->/, '')
+        results[param] = value
+      else
+        results[(index+1).to_s] = arg.strip
+      end
+    end
+    results.each do |key, val|
+      results[key] = '' if val.start_with?('|')
+    end
+    results
+  end
 end

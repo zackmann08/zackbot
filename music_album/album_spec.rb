@@ -55,8 +55,34 @@ TEXT
   
 end
 
-
-
+describe 'parse_extra_chrono' do
+  it "works for base case" do
+    text = <<~TEXT
+{{Extra chronology
+| Artist      = [[The Stranglers]]
+| Type        = single
+| Last single = "[[Always the Sun]] (Sunny Side Up Mix)"<br/>(1991)
+| This single = "'''Golden Brown'''"<br/>(1991)
+| Next single = "Heaven or Hell"<br/>(1992)
+}}
+TEXT
+    result = <<~TEXT
+{{subst:Extra chronology
+| Artist      = [[The Stranglers]]
+| Type        = single
+| prev_title="[[Always the Sun]] (Sunny Side Up Mix)"
+| prev_year=1991
+| title="Golden Brown"
+| year=1991
+| next_title="Heaven or Hell"
+| next_year=1992
+}}
+TEXT
+    expect(parse_extra_chrono(text)).to eq(result.strip)
+  end
+  
+  
+end
 describe 'parse_album_year' do
   it 'returns a valid result' do
     text = "''Time Stands Still''<br/>(2015)"
@@ -265,7 +291,7 @@ TEXT
 }}
 TEXT
     result = <<~TEXT
-{{subst:Infobox Album
+{{subst:Infobox Album 
 |released    = November 16, 2009 
 |recorded    =  
 |genre       = [[Hip hop music|Hip hop]]<br>[[Trip hop]]<br>[[Ethiopian music]]<br>[[Instrumental hip hop]] 
@@ -497,6 +523,190 @@ TEXT
 TEXT
     expect(parse_album(text)).to eq(result)
   end
+
+  it "works with extra chrolonogy" do
+    text = <<~TEXT
+{{Infobox album <!-- See Wikipedia:WikiProject_Albums -->
+| Name        = Gamma 1
+| Last album  = ''[[LAST]]''<br />(1995)
+| This album  = '''''Gamma 1'''''<br />(1996)
+| Next album  = ''[[Gamma 2]]''<br />(1997)
+| Misc        =
+{{Extra chronology
+   | Artist      = [[Ronnie Montrose]]
+   | Type        = studio
+   | Last album  = ''[[Open Fire (album)|Open Fire]]''<br />(1978)
+   | This album  = '''''Gamma 1'''''<br />(1979)
+   | Next album  = ''[[Gamma 2]]''<br />(1980)}}
+}} 
+TEXT
+    result = <<~TEXT
+{{subst:Infobox Album 
+| name        = Gamma 1
+| This album  = '''''Gamma 1'''''<br />(1996)
+| misc        =
+{{subst:Extra chronology
+   | Artist      = [[Ronnie Montrose]]
+   | Type        = studio
+| prev_title=[[Open Fire (album)|Open Fire]]
+| prev_year=1978
+| title=Gamma 1
+| year=1979
+| next_title=[[Gamma 2]]
+| next_year=1980
+}}
+| prev_title=[[LAST]]
+| prev_year=1995
+| next_title=[[Gamma 2]]
+| next_year=1997
+}} 
+TEXT
+    expect(parse_album(text)).to eq(result)
+  end
+
+  it "works with multiple extra chrolonogy" do
+    text = <<~TEXT
+{{Infobox album <!-- See Wikipedia:WikiProject_Albums -->
+| Name = G3: Live in Tokyo
+| Cover = G3tok.jpg
+| Type = live
+| Artist = [[Joe Satriani]], [[Steve Vai]] and [[John Petrucci]]
+| Released = October 25, 2005
+| Recorded = May 8, 2005
+| Genre = [[Instrumental rock]]
+| Length = 101:04
+| Label = [[Epic Records|Epic]]
+| Producer = [[Joe Satriani]]<br />[[Steve Vai]]<br />[[John Petrucci]]
+| Misc = {{Extra chronology
+| Artist = [[Joe Satriani]]
+| Type = live
+| Last album = ''[[Is There Love in Space?]]''<br />(2004)
+| This album = '''''G3: Live in Tokyo'''''<br />(2005)
+| Next album = ''[[One Big Rush: The Genius of Joe Satriani]]'' <br>(2005)
+}}
+{{Extra chronology
+| Artist = [[Steve Vai]]
+| Type = live
+| Last album = ''[[Live_at_the_Astoria,_London#CD|Live in London]]''<br />(2004)
+| This album = '''''G3: Live in Tokyo'''''<br />(2005)
+| Next album = ''[[Sound Theories Vol. I & II]]''<br />(2007)
+}}
+{{Extra chronology
+| Artist = [[John Petrucci]]
+| Type = live
+| Last album = ''[[Suspended Animation (John Petrucci album)|Suspended Animation]]''<br />(2005)
+| This album = '''''G3: Live in Tokyo'''''<br />(2005)
+| Next album =
+}}
+{{Extra chronology
+| Artist = [[G3 (tour)|G3]]
+| Type = live
+| Last album = ''[[G3: Rockin' in the Free World]]''<br />(2003)
+| This album = '''''G3: Live in Tokyo'''''<br />(2005)
+| Next album =
+}}
+}}
+TEXT
+    result = <<~TEXT
+{{subst:Infobox Album 
+| name = G3: Live in Tokyo
+| cover = G3tok.jpg
+| type = live
+| artist = [[Joe Satriani]], [[Steve Vai]] and [[John Petrucci]]
+| released = October 25, 2005
+| recorded = May 8, 2005
+| genre = [[Instrumental rock]]
+| length = 101:04
+| label = [[Epic Records|Epic]]
+| producer = [[Joe Satriani]]<br />[[Steve Vai]]<br />[[John Petrucci]]
+| misc = {{subst:Extra chronology
+| Artist = [[Joe Satriani]]
+| Type = live
+| prev_title=[[Is There Love in Space?]]
+| prev_year=2004
+| title=G3: Live in Tokyo
+| year=2005
+| next_title=[[One Big Rush: The Genius of Joe Satriani]]
+| next_year=2005
+}}
+{{subst:Extra chronology
+| Artist = [[Steve Vai]]
+| Type = live
+| prev_title=[[Live_at_the_Astoria,_London#CD|Live in London]]
+| prev_year=2004
+| title=G3: Live in Tokyo
+| year=2005
+| next_title=[[Sound Theories Vol. I & II]]
+| next_year=2007
+}}
+{{subst:Extra chronology
+| Artist = [[John Petrucci]]
+| Type = live
+| prev_title=[[Suspended Animation (John Petrucci album)|Suspended Animation]]
+| prev_year=2005
+| title=G3: Live in Tokyo
+| year=2005
+| next_title=
+| next_year=
+}}
+{{subst:Extra chronology
+| Artist = [[G3 (tour)|G3]]
+| Type = live
+| prev_title=[[G3: Rockin' in the Free World]]
+| prev_year=2003
+| title=G3: Live in Tokyo
+| year=2005
+| next_title=
+| next_year=
+}}
+}}
+TEXT
+    expect(parse_album(text)).to eq(result)
+  end
+
+  it "works for special case with new lines" do
+    text = <<~TEXT
+{{Infobox album| <!-- See Wikipedia:WikiProject_Albums -->
+| Name        = Time Flies...but Aeroplanes Crash
+| Type        = ep
+| Artist      = [[Subhumans (UK band)|Subhumans]]
+| Cover       = Time FliesBut Aeroplanes Crash.jpg
+| Released    = October 1983
+| Recorded    = 5/10 August 1983 (tracks 1-3, 5 and 8),
+29 July 1983 (tracks 4, 6 and 7)
+| Genre       = [[Punk rock|Punk]]
+| Length      =
+| Label       = [[Bluurg Records]]
+| Producer    = Subhumans
+| Reviews     =
+| Last album  = ''[[Evolution (Subhumans album)|Evolution]]''<br/> (1983)
+| This album  = '''''Time Flies...but Aeroplanes Crash'''''<br/> (1983)
+| Next album  = ''[[From the Cradle to the Grave (album)|From the Cradle to the Grave]]''<br/> (1984)
+}}
+    TEXT
+    result = <<~TEXT
+{{subst:Infobox Album
+| name        = Time Flies...but Aeroplanes Crash
+| type        = ep
+| artist      = [[Subhumans (UK band)|Subhumans]]
+| cover       = Time FliesBut Aeroplanes Crash.jpg
+| released    = October 1983
+| recorded    = 5/10 August 1983 (tracks 1-3, 5 and 8),
+29 July 1983 (tracks 4, 6 and 7)
+| genre       = [[Punk rock|Punk]]
+| length      =
+| label       = [[Bluurg Records]]
+| producer    = Subhumans
+| Reviews     =
+| This album  = '''''Time Flies...but Aeroplanes Crash'''''<br/> (1983)
+| prev_title=[[Evolution (Subhumans album)|Evolution]]
+| prev_year=1983
+| next_title=[[From the Cradle to the Grave (album)|From the Cradle to the Grave]]
+| next_year=1984
+}}
+TEXT
+    expect(parse_album(text)).to eq(result)
+  end
   # 
   # it "works for special case #1" do
   #   text = <<~TEXT
@@ -508,5 +718,4 @@ TEXT
   #   expect(parse_album(text)).to eq(result)
   # end
 end
-
 

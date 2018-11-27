@@ -99,6 +99,7 @@ class Country
   end
 
   SKIPS = ['MIX', 'ANA']
+  AT_THE = /\[\[[\w\s]*at the[\w\s]*\|([\w\s]*)\]\]/
   
   def to_template(template, event)
     @ioc&.strip!
@@ -127,6 +128,9 @@ class Country
     # @name_param = @raw_name.gsub('}[', '} [') if @raw_name.include?('/')
     # @name_param = @raw_name.gsub('}[', '} [') if @raw_name.include?('[')
     # @name_param = @raw_name.gsub(/\}\|\s*\d+/, '}')
+
+    @name_param = "{{GamesSport|#{@raw_name.match(AT_THE)[1]}|Format=d}}" if @raw_name.match?(AT_THE)
+    # @name_param = "{{GamesSporrt|#{@raw_name}|Format=d}}" 
     
     note_param = ''
     note_param = @raw_row.match(/(\{\{efn[^}]*\}\})/)[1] if @raw_row.match?(/(\{\{efn[^}]*\}\})/)
