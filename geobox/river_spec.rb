@@ -425,6 +425,7 @@ describe 'parse_geobox_to_river' do
 | name_etymology     = [[Algonquin language]]
 <!---------------------- IMAGE & MAP -->
 | image              = Abitibi River.JPG
+| image_size         = 
 | image_caption      = Abitibi River at Iroquois Falls
 | map                = 
 | map_size           = 
@@ -576,6 +577,7 @@ describe 'parse_geobox_to_river' do
   | page = 20}}</ref>
 <!---------------------- IMAGE & MAP -->
 | image              = Lower abiqua creek.jpg
+| image_size         = 300px
 | image_caption      = Abiqua Creek from Oregon Route 214
 | map                = 
 | map_size           = 300
@@ -702,6 +704,7 @@ describe 'parse_geobox_to_river' do
 | name_etymology     = 
 <!---------------------- IMAGE & MAP -->
 | image              = Allagash_River_2003.jpg
+| image_size         = 250
 | image_caption      = 
 | map                = 
 | map_size           = 
@@ -844,6 +847,7 @@ describe 'parse_geobox_to_river' do
 | name_etymology     = Named after [[George Back]]
 <!---------------------- IMAGE & MAP -->
 | image              = Back River (July 2006).jpg
+| image_size         = 
 | image_caption      = Rock garden on the Back River in July 2006
 | map                = 
 | map_size           = 300
@@ -985,6 +989,7 @@ describe 'parse_geobox_to_river' do
 | name_etymology     = 
 <!---------------------- IMAGE & MAP -->
 | image              = Big_Tujunga_Canyon_View_of_River_and_Tujunga.JPG
+| image_size         = 
 | image_caption      = The wash in lower Big Tujunga Canyon
 | map                = 
 | map_size           = 
@@ -1138,6 +1143,7 @@ describe 'parse_geobox_to_river' do
 | name_etymology     = Spanish language "Aliso" meaning [[alder]], thus "Aliso Creek" means "Alder Creek"
 <!---------------------- IMAGE & MAP -->
 | image              = Alisocreek Bridge.JPG
+| image_size         = 
 | image_caption      = Aliso Creek flows underneath the Aliso Creek Road bridge before it enters [[Aliso and Wood Canyons Wilderness Park]].
 | map                = Alisocreekocmap.png
 | map_size           = 260
@@ -1299,6 +1305,7 @@ describe 'parse_geobox_to_river' do
 | name_etymology     = 
 <!---------------------- IMAGE & MAP -->
 | image              = Pembina River ND.jpg
+| image_size         = 291px
 | image_caption      = The Pembina River at [[Pembina, North Dakota]], as viewed upstream from its mouth
 | map                = Pembinarivermap.png
 | map_size           = 291px
@@ -1331,7 +1338,7 @@ describe 'parse_geobox_to_river' do
 | discharge1_max     = 
 <!---------------------- BASIN FEATURES -->
 | source1            = [[Turtle Mountain (plateau)]]
-| source1_location   = {{subst:#ifexist:Manitoba|[[Manitoba]]|Manitoba}}, {{subst:#ifexist:Canada|[[Canada]]|Canada}}
+| source1_location   = Manitoba, {{subst:#ifexist:Canada|[[Canada]]|Canada}}
 | source1_coordinates= {{coord|49|05|06|N|100|03|05|W|display=inline}}<br />(near Turtle Mountain)
 | source1_elevation  = 
 | mouth              = [[Red River of the North]]

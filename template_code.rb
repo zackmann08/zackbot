@@ -8,7 +8,7 @@ require 'uri'
 require 'colorize'
 require 'json'
 text = <<~TEXT
-embed | name | native_name | native_name_lang | other_name | image | image_size | alt | caption | image_map | image_map_alt | image_map_caption | pushpin_map | pushpin_map_alt | coordinates | pushpin_map_caption | etymology | name_etymology | tower | building | location | caster | commissioner | cast_date | installed_date | event1_date | event2_date | event3_date | event4_date | event5_date | event1 | event2 | event3 | event4 | event5 | volume | weight | width | height | material1 | material2 | material3 | material4 | material1_part | material2_part | material3_part | material4_part | hung | striking | operation | musical_note | earshot | website | footnotes   
+wide | name | title | image | logo | image_size | image_upright | alt | caption | team1logo | team2logo | team3logo | team4logo | team1 | team2 | team3 | team4 | native name | native_name | other names | sport | type | city or region | teams involved | teams | first contested | firstmeeting | mostrecent | nextmeeting | broadcasters | stadiums | trophy | total | most wins | most player appearances | top scorer | alltimerecord | series | regularseason | postseason | largestvictory | largestscoring | longeststreak | longestunbeatenstreak | currentstreak | currentunbeatenstreak | league | trophy series | smallestvictory | section_info | section_header | map_location | map_width | map_caption | map_alt | map_relief | map_label1 | map_label1_position | map_mark1 | coordinates1 | coordinates | map_label2 | map_label2_position | map_mark2 | coordinates2 | map_label3 | map_label3_position | map_mark3 | coordinates3 | map_label4 | map_label4_position | map_mark4 | coordinates4
 TEXT
 
 text.strip!

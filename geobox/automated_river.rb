@@ -11,7 +11,9 @@ include Geobox
 
 SKIPS = [
     'Hudson River',
-    'Baixa da Ponta dos Rosais'
+    'Baixa da Ponta dos Rosais',
+    'Shinnecock Canal',
+    'Walhonding Canal'
 ]
 
 
@@ -23,7 +25,7 @@ url = 'https://petscan.wmflabs.org/?psid=6503971&format=json'
 
 titles = Helper.get_wmf_pages(url)
 puts titles.size
-titles.reverse!
+# titles.reverse!
 # count = 1
 titles.each do |title|
   next if SKIPS.include?(title)

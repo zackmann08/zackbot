@@ -454,33 +454,40 @@ module Geobox
 | source1_location   = #{parse_river_location(params, 'source')}
 | source1_coordinates= #{params['source_coordinates']}#{params['source_coordinates_note']}
 | source1_elevation  = #{parse_source_elevation(params, 'source')}"
-    unless params['source1'].empty?
+    unless params['source1'].empty? && params['source1_location'].empty? && parse_river_location(params, 'source1').empty?
       result += "
-| source2            = #{autolink params['source1']}#{autolink params['source1_name']}
+| source2            = #{autolink params['source1']}#{autolink params['source1_name']} 
 | source2_location   = #{parse_river_location(params, 'source1')}
 | source2_coordinates= #{params['source1_coordinates']}#{params['source1_coordinates_note']}
 | source2_elevation  = #{parse_source_elevation(params, 'source1')}"
     end
-    unless params['source2'].empty?
+    unless params['source2'].empty? && params['source2_location'].empty? && parse_river_location(params, 'source2').empty?
       result += "
 | source3            = #{autolink params['source2']}#{autolink params['source2_name']}
 | source3_location   = #{parse_river_location(params, 'source2')}
 | source3_coordinates= #{params['source2_coordinates']}#{params['source2_coordinates_note']}
 | source3_elevation  = #{parse_source_elevation(params, 'source2')}"
     end
-    unless params['source3'].empty?
+    unless params['source3'].empty? && params['source3_location'].empty? && parse_river_location(params, 'source3').empty?
       result += "
 | source4            = #{params['source3']}#{params['source3_name']}
 | source4_location   = #{parse_river_location(params, 'source3')}
 | source4_coordinates= #{params['source3_coordinates']}#{params['source3_coordinates_note']}
 | source4_elevation  = #{parse_source_elevation(params, 'source3')}"
     end
-    unless params['source3'].empty?
+    unless params['source4'].empty? && params['source4_location'].empty? && parse_river_location(params, 'source4').empty?
       result += "
 | source5            = #{params['source4']}#{params['source4_name']}
 | source5_location   = #{parse_river_location(params, 'source4')}
 | source5_coordinates= #{params['source4_coordinates']}#{params['source4_coordinates_note']}
 | source5_elevation  = #{parse_source_elevation(params, 'source4')}"
+    end
+    unless params['source_confluence'].empty? && params['source_confluence_location'].empty? && parse_river_location(params, 'source_confluence').empty?
+      result += "
+| source_confluence            = #{params['source_confluence']}#{params['source_confluence_name']}
+| source_confluence_location   = #{parse_river_location(params, 'source_confluence')}
+| source_confluence_coordinates= #{params['source_confluence_coordinates']}#{params['source_confluence_coordinates_note']}
+| source_confluence_elevation  = #{parse_source_elevation(params, 'source_confluence')}"
     end
     result
   end
@@ -549,7 +556,7 @@ module Geobox
   end
   
   def parse_city_type(params)
-    raise UnresolvedCase.new('Both municipality & city') unless (params["municipality"].empty? || params["city"].empty?)
+    # raise UnresolvedCase.new('Both municipality & city') unless (params["municipality"].empty? || params["city"].empty?)
     return '' if (params["municipality"].empty? && params["city"].empty?)
     if params["municipality"].empty?
       return params['city_type'] unless params['city_type'].empty?
@@ -561,7 +568,7 @@ module Geobox
   end
   
   def parse_city(params)
-    raise UnresolvedCase.new('Both municipality & city') unless (params["municipality"].empty? || params["city"].empty?)
+    # raise UnresolvedCase.new('Both municipality & city') unless (params["municipality"].empty? || params["city"].empty?)
     return '' if (params["municipality"].empty? && params["city"].empty?)
     result = []
     if params["municipality"].empty?
@@ -624,16 +631,16 @@ module Geobox
       end
     end
     
-    raise UnresolvedCase.new('contains unsupported param - width')          unless params["width"].empty?
-    raise UnresolvedCase.new('contains unsupported param - width-imperial') unless params["width_imperial"].empty?
-    raise UnresolvedCase.new('contains unsupported param - depth')          unless params["depth"].empty?
-    raise UnresolvedCase.new('contains unsupported param - depth-imperial') unless params["depth_imperial"].empty?
-    raise UnresolvedCase.new('contains unsupported param - depth1')           unless params["depth1"].empty?
-    raise UnresolvedCase.new('contains unsupported param - depth1_imperial')  unless params["depth1_imperial"].empty?
-    raise UnresolvedCase.new('contains unsupported param - free2')            unless params["free2"].empty?
-    raise UnresolvedCase.new('contains unsupported param - source_confluence')              unless params["source_confluence"].empty?
-    raise UnresolvedCase.new('contains unsupported param - source_confluence_location')     unless params["source_confluence_location"].empty?
-    raise UnresolvedCase.new('contains unsupported param - source_confluence_coordinates')  unless params["source_confluence_coordinates"].empty?
+    # raise UnresolvedCase.new('contains unsupported param - width')          unless params["width"].empty?
+    # raise UnresolvedCase.new('contains unsupported param - width-imperial') unless params["width_imperial"].empty?
+    # raise UnresolvedCase.new('contains unsupported param - depth')          unless params["depth"].empty?
+    # raise UnresolvedCase.new('contains unsupported param - depth-imperial') unless params["depth_imperial"].empty?
+    # raise UnresolvedCase.new('contains unsupported param - depth1')           unless params["depth1"].empty?
+    # raise UnresolvedCase.new('contains unsupported param - depth1_imperial')  unless params["depth1_imperial"].empty?
+    # raise UnresolvedCase.new('contains unsupported param - free2')            unless params["free2"].empty?
+    # raise UnresolvedCase.new('contains unsupported param - source_confluence')              unless params["source_confluence"].empty?
+    # raise UnresolvedCase.new('contains unsupported param - source_confluence_location')     unless params["source_confluence_location"].empty?
+    # raise UnresolvedCase.new('contains unsupported param - source_confluence_coordinates')  unless params["source_confluence_coordinates"].empty?
     
     # puts params["region"].inspect
     result = "{{Infobox river
@@ -677,6 +684,7 @@ module Geobox
 | mouth_coordinates  = #{params['mouth_coordinates']}#{params['mouth_coordinates_country']}#{params['mouth_coordinates_note']}
 | mouth_elevation    = #{parse_mouth_elevation(params)}
 | progression        = 
+| waterfalls         = #{params['waterfalls']}
 | river_system       = #{autolink(params['parent'])}
 | basin_size         = #{parse_watershed(params)}
 | tributaries_left   = #{parse_tributaries_l(params)}
@@ -781,12 +789,12 @@ module Geobox
     page.sub!(old_template, result)
     page
   end
-#   def parse_operator(params)
-#     return params['free'] if params['free_type'].downcase.strip == 'operator'
-#     return params['free1'] if params['free1_type'].downcase.strip == 'operator'
-#     return params['free2'] if params['free2_type'].downcase.strip == 'operator'
-#     return params['free3'] if params['free3_type'].downcase.strip == 'operator'
-#   end
+  def parse_operator(params)
+    return params['free'] if params['free_type'].downcase.strip == 'operator'
+    return params['free1'] if params['free1_type'].downcase.strip == 'operator'
+    return params['free2'] if params['free2_type'].downcase.strip == 'operator'
+    return params['free3'] if params['free3_type'].downcase.strip == 'operator'
+  end
 # 
 #   def parse_geobox_to_beach(page)
 #     page.force_encoding('UTF-8')
@@ -833,73 +841,73 @@ module Geobox
 #     page
 #   end
 # 
-#   def parse_geobox_to_castle(page)
-#     page.force_encoding('UTF-8')
-#     templates = page.scan(/(?=\{\{(?:geobox|geo box}))(\{\{(?>[^{}]++|\g<1>)*}})/i).flatten
-#     raise NoTemplatesFound if templates.empty?
-#     raise UnresolvedCase if templates.size > 1
-# 
-#     template = templates.first
-#     old_template = template.dup
-#     template.gsub!(/<!--[\w\W]*?-->/,'')
-#     params = Helper.parse_template(template)
-# 
-#     raise UnresolvedCase unless params["district1"].empty?
-#     raise UnresolvedCase unless params["city1"].empty?
-#     raise UnresolvedCase unless params["region1"].empty?
-#     raise UnresolvedCase unless params["state1"].empty?
-# 
-#     # puts params["established_type"].inspect
-#     result = "{{Infobox military installation
-# | name            = #{params['name']}
-# | ensign          = 
-# | ensign_size     =
-# | native_name     = #{params['native_name']}
-# | type            = #{params['category']}
-# <!-- images -->
-# | image           = #{params['image']}
-# | caption         = #{params['image_caption']}
-# <!-- maps and coordinates -->
-# | image_map             = #{params['map'] if get_map(params).empty?}
-# | map_caption           = #{params['map_caption'] if get_map_caption(params).empty?}
-# | pushpin_map           = #{get_map(params)}
-# | pushpin_relief        = #{params["pushpin_map_relief"]}
-# | pushpin_map_caption   = #{get_map_caption(params)} 
-# | coordinates           = #{params['coordinates']}
-# | coordinates_footnotes = #{params['coordinates_note']}
-# <!-- location -->
-# | partof           = 
-# | location         = #{parse_location_no_country(params)}
-# | nearest_town     = 
-# | country          = #{params['country'].sub!(/\{\{flag\|(.*)\}\}/,'[[\1]]')}
-# <!-- stats -->
-# | ownership        = #{params['owner']}
-# | operator         = #{parse_operator(params)}
-# | open_to_public   = #{params['public']}
-# | site_area        = 
-# | built            = #{params['established']}
-# | used             = 
-# | builder          = 
-# | materials        = #{parse_materials(params)}
-# | height           = 
-# | length           = 
-# | fate             = 
-# | condition        = 
-# | battles          = 
-# | events           = 
-# | garrison         = 
-# | occupants        = 
-# | website          = 
-# | footnotes        = 
-# }}"
-#     # | world_heritage_site =
-#     result.gsub!('<nowiki>', '')
-#     result.gsub!('</nowiki>', '')
-#     # result
-# 
-#     page.sub!(old_template, result)
-#     page
-#   end
+  def parse_geobox_to_castle(page)
+    page.force_encoding('UTF-8')
+    templates = page.scan(/(?=\{\{(?:geobox|geo box}))(\{\{(?>[^{}]++|\g<1>)*}})/i).flatten
+    raise NoTemplatesFound if templates.empty?
+    raise UnresolvedCase if templates.size > 1
+
+    template = templates.first
+    old_template = template.dup
+    template.gsub!(/<!--[\w\W]*?-->/,'')
+    params = Helper.parse_template(template)
+
+    raise UnresolvedCase unless params["district1"].empty?
+    raise UnresolvedCase unless params["city1"].empty?
+    raise UnresolvedCase unless params["region1"].empty?
+    raise UnresolvedCase unless params["state1"].empty?
+
+    # puts params["established_type"].inspect
+    result = "{{Infobox military installation
+| name            = #{params['name']}
+| ensign          = 
+| ensign_size     =
+| native_name     = #{params['native_name']}
+| type            = #{params['category']}
+<!-- images -->
+| image           = #{params['image']}
+| caption         = #{params['image_caption']}
+<!-- maps and coordinates -->
+| image_map             = #{params['map'] if get_map(params).empty?}
+| map_caption           = #{params['map_caption'] if get_map_caption(params).empty?}
+| pushpin_map           = #{get_map(params)}
+| pushpin_relief        = #{params["pushpin_map_relief"]}
+| pushpin_map_caption   = #{get_map_caption(params)} 
+| coordinates           = #{params['coordinates']}
+| coordinates_footnotes = #{params['coordinates_note']}
+<!-- location -->
+| partof           = 
+| location         = #{parse_location_no_country(params)}
+| nearest_town     = 
+| country          = #{params['country'].sub!(/\{\{flag\|(.*)\}\}/,'[[\1]]')}
+<!-- stats -->
+| ownership        = #{params['owner']}
+| operator         = #{parse_operator(params)}
+| open_to_public   = #{params['public']}
+| site_area        = 
+| built            = #{params['established']}
+| used             = 
+| builder          = 
+| materials        = #{parse_materials(params)}
+| height           = 
+| length           = 
+| fate             = 
+| condition        = 
+| battles          = 
+| events           = 
+| garrison         = 
+| occupants        = 
+| website          = 
+| footnotes        = 
+}}"
+    # | world_heritage_site =
+    result.gsub!('<nowiki>', '')
+    result.gsub!('</nowiki>', '')
+    # result
+
+    page.sub!(old_template, result)
+    page
+  end
 # 
 #   def parse_geobox_to_bridge(page)
 #     page.force_encoding('UTF-8')

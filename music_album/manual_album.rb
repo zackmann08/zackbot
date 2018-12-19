@@ -10,30 +10,25 @@ require './album'
 include Album
 
 text = <<~TEXT
-{{Infobox single <!-- See Wikipedia:WikiProject_Songs -->
-| Name           = 'Coz I'm Free
-| Cover          = 'Coz_I'm_Free_by_Christine_Anu.jpg
-| Caption        = CD single cover
-| Artist         = [[Christine Anu]]
-| from Album     = '''[[Come My Way (Christine Anu album)|Come My Way]]''' 
-| A-side         = "'Coz I'm Free"
-| B-side         = 
-| Released       = April 2001
-| Format         = [[CD Single]]
-| Recorded       = Megaphon Studios, Sydney, 2000
-| Genre          = [[Pop music|Pop]]
-| Length         = 3:56
-| Label          = [[Mushroom Records]]
-| Writer         = [[Christine Anu]], [[Stuart Crichton]], [[Andy White (singer-songwriter)|Andy White]]
-| Producer       = Stuart Crichton
+{{Infobox single
+| Name           = Flag Day
+| Cover          = 
+| Artist         = [[The Housemartins]]
+| from Album     = [[London 0 Hull 4]]
+| Released       = 1985
+| Format         = 
+| Recorded       = 1985
+| Genre          = [[Indie rock]]
+| Length         = 5:24
+| Label          = Go Disc!
+| Writer         = Paul Heaton, Stan Cullimore, Ted Key
+| Producer       = 
 | Certification  = 
-| Chronology     = [[Christine Anu]] singles
-| Last single    = "[[Jump to Love]]" <br>(2000)
-| This single    = "''''Coz I'm Free'''" <br>(2001)
-| Next single    = "[[Talk About Love]]" <br>(2003)
+| Last single    = 
+| This single    = "'''Flag Day'''"
+| Next single    = "[[Sheep (The Housemartins song)|Sheep]]"
 | Misc           = 
 }}
-
 TEXT
 #  {{small|(Bootleg)}}
 

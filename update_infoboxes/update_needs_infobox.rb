@@ -38,7 +38,7 @@ titles = Helper.get_wmf_pages(url)
 TALK_PAGE = /\|\s*(?:needs-infobox|infoboxneeded|infobox|needs-cultivar-infobox|no-infobox|ibox)\s*=\s*[^\}\|]*/
 INFOBOX = /\{\{[\s\w\n]*infobox/i
 #75090 
-start = 65500
+start = 34500
 # count = 0
 titles.drop(start).each_with_index do |title, index|
   # break if count>100

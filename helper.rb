@@ -18,6 +18,12 @@ Dir[File.dirname(__FILE__) + '/helpers/*.rb'].each do |helper|
 end
 
 class Helper
+  class UnresolvedCase < StandardError
+    def initialize(message = '??')
+      super("Unresolved case: '#{message}'")
+    end
+  end
+  class NoTemplatesFound < StandardError; end
   class NoResults < StandardError
     def initialize(url)
       super("No results were found at #{url}")
@@ -118,6 +124,7 @@ class Helper
   # ARGS = /\s*([\w\s\-]*)=\s*(.*)\n*(?:\}\})?/
   ARGS = /\s*([\w\s\-]*)=\s*([\w\W]*)\n*(?:\}\})?/
   def self.parse_template(text)
+    text.gsub!(/<!--.*-->/, '')
     text = text.strip[2..-3]
     # puts "##{text}#"
     results = Hash.new('')
@@ -142,5 +149,14 @@ class Helper
       results[key] = '' if val.start_with?('|')
     end
     results
+  end
+
+  def self.get_custom_value(prompt)
+    raise UnresolvedCase.new('Skipping request for custom value')
+    puts prompt.colorize(:red)
+    puts '"X" will raise error'.colorize(:red)
+    result = gets.strip.upcase
+    raise UnresolvedCase.new('Skipping') if result == 'X'
+    result
   end
 end

@@ -15,11 +15,11 @@ REGEX = /Total edits.*\n.*<strong>(?<number>[0-9,]*)/
 
 def get_content(url)
   begin
-    Timeout.timeout(40) do
+    Timeout.timeout(120) do
       @content = HTTParty.get(url)
     end
   rescue Timeout::Error
-    puts 'ERROR: Took longer than 40 seconds to get edit count. Script aborting.'
+    puts 'ERROR: Took longer than 120 seconds to get edit count. Script aborting.'
     exit(0)
   end
 end

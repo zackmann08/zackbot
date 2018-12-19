@@ -12,8 +12,8 @@ module Album
   # IDEA: Consider just building a new template and subst: it in so it will be properly formatted? 
   # INFOBOX_REGEX = "Album infobox soundtrack|Album [Ii]nfobox|DVD infobox|Infobox [Aa]lbum|Infobox DVD|Infobox EP|Infobox music DVD"
   # INFOBOX_REGEX = "Extra chronology"
-  INFOBOX_REGEX = "Infobox [Ss]ingle|Infobox Singles|Info box single|Single [Ii]nfobox"
-  # INFOBOX_REGEX = "Infobox album|Infobox [Ss]ong|Infobox [Ss]tandard|Song infobox|Infobox Korean song|Infobox [Ss]ingle|Infobox Singles|Info box single|Single [Ii]nfobox"
+  # INFOBOX_REGEX = "Infobox [Ss]ingle|Infobox Singles|Info box single|Single [Ii]nfobox"
+  INFOBOX_REGEX = "Infobox [Ss]ong|Infobox [Ss]tandard|Song infobox|Infobox Korean song|Infobox [Ss]ingle|Infobox Singles|Info box single|Single [Ii]nfobox"
   BREAK = /<\s*[\/]*br\s*[\/]*\s*>/
   PARAMETERS = ""
   WIKIPROJECT = /<!-- See\s*Wikipedia:WikiProject[\s_]Albums -->/
@@ -101,8 +101,8 @@ module Album
     text.strip
   end
   
-  LAST_ALBUM = /Last album\s*=(.*(?:<ref>[\w\W]*?<\/ref>.*)|.*)/
-  NEXT_ALBUM = /Next album\s*=(.*(?:<ref>[\w\W]*?<\/ref>.*)|.*)/
+  LAST_ALBUM = /Last single\s*=(.*(?:<ref>[\w\W]*?<\/ref>.*)|.*)/
+  NEXT_ALBUM = /Next single\s*=(.*(?:<ref>[\w\W]*?<\/ref>.*)|.*)/
   def parse_album(page)
     templates = page.scan(/(?=\{\{\s*(?:#{INFOBOX_REGEX.to_s}))(\{\{(?>[^{}]++|\g<1>)*}})/i).flatten
     raise NoTemplatesFound if templates.empty?
@@ -129,13 +129,13 @@ module Album
         template.gsub!(line, "#{line.chomp("}}")}\n}}") if (!line.start_with?('}}') && line.end_with?('}}'))
       end
 
-      # last_data = parse_album_year(template.match(LAST_ALBUM)[1]) if template.match?(LAST_ALBUM)
-      # next_data = parse_album_year(template.match(NEXT_ALBUM)[1]) if template.match?(NEXT_ALBUM)
+      last_data = parse_album_year(template.match(LAST_ALBUM)[1]) if template.match?(LAST_ALBUM)
+      next_data = parse_album_year(template.match(NEXT_ALBUM)[1]) if template.match?(NEXT_ALBUM)
       
       template.gsub!(/<!--.*-->/,        '')
       # template.gsub!(/#{INFOBOX_REGEX}/i, 'subst:Infobox Album')
-      template.gsub!(/#{INFOBOX_REGEX}/i, 'subst:Infobox single')
-      # template.gsub!(/#{INFOBOX_REGEX}/i, 'subst:Infobox song')
+      # template.gsub!(/#{INFOBOX_REGEX}/i, 'subst:Infobox single')
+      template.gsub!(/#{INFOBOX_REGEX}/i, 'subst:Infobox song | type = single')
       # template.gsub!(/{{\s*singles/i, '{{subst:singles')
       # template.gsub!(/{{\s*Extra album cover/i, '{{subst:Extra album cover')
       # template.gsub!(/{{\s*Extra track listing/i, '{{subst:Extra track listing')
@@ -165,14 +165,14 @@ module Album
       # template.gsub!(/Compiler(\s*)=/,   'compiler\1=')
       # template.gsub!(/Chronology(\s*)=/, 'chronology\1=')
       # template.gsub!(/Misc(\s*)=/,       'misc\1=')
-      # template.gsub!(LAST_ALBUM,          '')
-      # template.gsub!(NEXT_ALBUM,          '')
+      template.gsub!(LAST_ALBUM,          '')
+      template.gsub!(NEXT_ALBUM,          '')
       # template.gsub!(/\s*\|\s*\n/,        "\n")
       # template.gsub!(/\{\{flat\s?list\s*\n/i, "{{flatlist|\n")
       # template.gsub!(/\{\{plain\s?list\s*\n/i, "{{plainlist|\n")
       # 
-      # template.insert(-3, "| prev_title=#{last_data[0]}\n| prev_year=#{last_data[1]}\n") if last_data
-      # template.insert(-3, "| next_title=#{next_data[0]}\n| next_year=#{next_data[1]}\n") if next_data
+      template.insert(-3, "| prev_title=#{last_data[0]}\n| prev_year=#{last_data[1]}\n") if last_data
+      template.insert(-3, "| next_title=#{next_data[0]}\n| next_year=#{next_data[1]}\n") if next_data
       
       new_temp = template.each_line.map do |line|
         line = "|#{line}" unless (line.match?(/^\s*\|/) || 
@@ -194,6 +194,25 @@ module Album
       end
       template.gsub!(/\n\s*\|\s*\n/, "\n")
       raise 'HAS LEFTOVER TEXT' if template.match?(/!EXTRA!/)
+      page.gsub!(old_text, template)
+    end
+        
+    page 
+  end
+  
+  def parse_song(page)
+    templates = page.scan(/(?=\{\{\s*(?:#{INFOBOX_REGEX.to_s}))(\{\{(?>[^{}]++|\g<1>)*}})/i).flatten
+    raise NoTemplatesFound if templates.empty?
+        
+    templates.each do |template|
+      old_text = template.dup
+      template.gsub!(/<!--[\w\W]*?-->/,'')
+      # 
+      # if template.match?(/\{\{\s*(?:#{INFOBOX_REGEX})\s*\|/i) && !template.match?(/\{\{\s*(?:#{INFOBOX_REGEX})\s*\n\s*\|/i)
+      #   template = fix_pipes(template)
+      # end
+      template.gsub!(/<!--.*-->/,        '')
+      template.gsub!(/#{INFOBOX_REGEX}/i, 'subst:Infobox song')
       page.gsub!(old_text, template)
     end
         
