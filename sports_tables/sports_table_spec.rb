@@ -69,10 +69,10 @@ describe 'Team' do
   end
   
   describe 'parse_name' do
-    it 'raises an error if the length is less than 3' do
-      expect{Team.parse_name('AA')}.to raise_error(Helper::UnresolvedCase)
-    end
-    
+    # it 'raises an error if the length is less than 3' do
+    #   expect{Team.parse_name('AA')}.to raise_error(Helper::UnresolvedCase)
+    # end
+    # 
     # it 'raises an error if the name contains numbers' do
     #   expect{Team.parse_name('Fredrick John Smith the 3rd')}.to raise_error(Helper::UnresolvedCase)
     # end
@@ -449,6 +449,90 @@ TEXT
 TEXT
     expect(parse_sports_table(text)).to eq(result.strip)
   end
+  it 'works for case #6 (extra columns)' do
+    $allow_extra_columns = true
+    text = <<~TEXT
+{{Fb cl header}}
+{{Fb cl2 team|p=1|t=[[Matavera FC|Matavera]]|w=5|d=1|l=0|gf=11|ga=3|bc=#D0F0C0|qualified=y}}
+|rowspan=4|<small>Qualified for [[1984 Cook Islands Round Cup#Knockout stage|Knockout stage]]</small>
+{{Fb cl2 team|p=2|t=[[Titikaveka FC|Titikaveka]]|w=4|d=2|l=0|gf=20|ga=5|bc=#D0F0C0|qualified=y}}
+{{Fb cl2 team|p=3|t=[[Avatiu FC|Avatiu]] |w=3|d=0|l=3|gf=9|ga=8|bc=#D0F0C0|qualified=y}}
+{{Fb cl2 team|p=4|t=[[Arorangi FC|Arorangi]]|w=2|d=2|l=2|gf=6|ga=9|bc=#D0F0C0|qualified=y}}
+{{Fb cl2 team|p=5|t=[[Nikao Sokattack FC|Nikao]]|w=2|d=1|l=3|gf=12|ga=11}}
+{{Fb cl2 team|p=6|t=[[Tupapa Maraerenga FC|Tupapa]]|w=0|d=2|l=4|gf=6|ga=15}}
+{{Fb cl2 team|p=7|t=[[Takuvaine FC|Takuvaine]]|w=1|d=0|l=5|gf=3|ga=16}}
+{{Fb cl footer|u=|s=<ref name="RSSSF2">[http://www.rsssf.com/tablesc/cook84.html Cook Islands 1984] at RSSSF.com</ref>|nt=|date=July 2013}}
+
+TEXT
+    result = <<~TEXT
+{{#invoke:sports table|main|style=WDL
+|res_col_header=QR
+
+|team1 = MAT | name_MAT = [[Matavera FC|Matavera]]
+|team2 = TIT | name_TIT = [[Titikaveka FC|Titikaveka]]
+|team3 = AVA | name_AVA = [[Avatiu FC|Avatiu]]
+|team4 = ARO | name_ARO = [[Arorangi FC|Arorangi]]
+|team5 = NIK | name_NIK = [[Nikao Sokattack FC|Nikao]]
+|team6 = TUP | name_TUP = [[Tupapa Maraerenga FC|Tupapa]]
+|team7 = TAK | name_TAK = [[Takuvaine FC|Takuvaine]]
+
+|win_MAT = 5 |draw_MAT = 1 |loss_MAT = 0 |gf_MAT = 11|ga_MAT = 3 |status_MAT = Q
+|win_TIT = 4 |draw_TIT = 2 |loss_TIT = 0 |gf_TIT = 20|ga_TIT = 5 |status_TIT = Q
+|win_AVA = 3 |draw_AVA = 0 |loss_AVA = 3 |gf_AVA = 9 |ga_AVA = 8 |status_AVA = Q
+|win_ARO = 2 |draw_ARO = 2 |loss_ARO = 2 |gf_ARO = 6 |ga_ARO = 9 |status_ARO = Q
+|win_NIK = 2 |draw_NIK = 1 |loss_NIK = 3 |gf_NIK = 12|ga_NIK = 11
+|win_TUP = 0 |draw_TUP = 2 |loss_TUP = 4 |gf_TUP = 6 |ga_TUP = 15
+|win_TAK = 1 |draw_TAK = 0 |loss_TAK = 5 |gf_TAK = 3 |ga_TAK = 16
+|col_Q=#D0F0C0|text_Q=<small>Qualified for [[1984 Cook Islands Round Cup#Knockout stage|Knockout stage]]</small>
+|result1=Q
+|result2=Q
+|result3=Q
+|result4=Q
+|update=
+|class_rules=1) points; 2) goal difference; 3) number of goals scored.
+|nt=
+|source=<ref name="RSSSF2">[http://www.rsssf.com/tablesc/cook84.html Cook Islands 1984] at RSSSF.com</ref>
+}}
+TEXT
+    expect(parse_sports_table(text)).to eq(result.strip)
+  end
+  it 'works for case #7 (extra columns)' do
+    $allow_extra_columns = true
+    text = <<~TEXT 
+{{Fb cl header}}
+{{Fb cl2 team |p=1 |t=[[Lincoln Red Imps F.C.|Lincoln Red Imps Women]] |w=4 |d=0 |l=0 |gf=15|ga= 1|bc=#D0F0C0|champion=}}||Possible [[2018–19 UEFA Women's Champions League]]
+{{Fb cl2 team |p=2 |t=[[Lions Gibraltar F.C.|Lions Gibraltar Women]]   |w=3 |d=0 |l=2 |gf=17|ga= 7|bc=#123456|champion=}}||TESTING
+{{Fb cl2 team |p=3 |t=[[Europa F.C.|Europa Women]]                     |w=0 |d=0 |l=5 |gf= 0|ga=24}}
+|}
+TEXT
+    result = <<~TEXT 
+{{#invoke:sports table|main|style=WDL
+|res_col_header=QR
+
+|team1 = LRI | name_LRI = [[Lincoln Red Imps F.C.|Lincoln Red Imps Women]]
+|team2 = LGW | name_LGW = [[Lions Gibraltar F.C.|Lions Gibraltar Women]]
+|team3 = EW  | name_EW  = [[Europa F.C.|Europa Women]]
+
+|win_LRI = 4 |draw_LRI = 0 |loss_LRI = 0 |gf_LRI = 15|ga_LRI = 1 
+|win_LGW = 3 |draw_LGW = 0 |loss_LGW = 2 |gf_LGW = 17|ga_LGW = 7 
+|win_EW  = 0 |draw_EW  = 0 |loss_EW  = 5 |gf_EW  = 0 |ga_EW  = 24
+|col_PP=#D0F0C0|text_PP=Possible [[2018–19 UEFA Women's Champions League]]
+|result1=PP
+|col_BB=#123456|text_BB=TESTING
+|result2=BB
+|update=complete|source=
+}}
+TEXT
+    expect(parse_sports_table(text)).to eq(result.strip)
+  end
+#   it 'works for case #' do
+#     text = <<~TEXT
+# 
+# TEXT
+#     result = <<~TEXT
+# TEXT
+#     expect(parse_sports_table(text)).to eq(result.strip)
+#   end
 #   it 'works for case #' do
 #     text = <<~TEXT
 # 

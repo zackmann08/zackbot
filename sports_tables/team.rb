@@ -80,13 +80,17 @@ class Team
   
 
   LINK_REGEX = /\[\[(?:[^\|]*\|)?(.*)\]\]/ #Gives me the displayed part of a link [[(foo)]] or [[foo|(bar)]]
+  # FLAG_REGEX = /\{\{(?:fbw|flag)\|([A-Z]{2,3})\}\}/
   
   #TODO: What if the name is a flag template? {{fb|USA}}
   def self.parse_raw_name(name)
+    puts name
     name.gsub!(/'{3}/, '')
     # puts name
     if name.match?(LINK_REGEX)
       parse_name(name.match(LINK_REGEX)[1])
+    # elsif name.match?(FLAG_REGEX)
+    #   parse_name(name.match(FLAG_REGEX)[1])
     else
       parse_name(name)
     end
@@ -95,13 +99,14 @@ class Team
   SINGLE_WORD_REGEX = /^[[:alpha:]]*$/
   DUAL_WORD_REGEX = /^([[[:punct:]][[:alpha:]]]+)\s+([[[:punct:]][[:alpha:]]]+)$/
   MULTI_WORD_REGEX = /^([[[:punct:]][[:alpha:]]]+)\s+([[[:punct:]][[:alpha:]]]+)\s+([[[:punct:]][[:alpha:]]]+).*$/
-  FLAG_REGEX = /^\{\{(?:fb)\|([A-Z]{3})\}\}$/i
+  FLAG_REGEX = /^\{\{(?:fb|fbw|flag)\|([A-Z]{3})\}\}$/i
   def self.parse_name(name)
     
     temp_name = name.gsub(/\([[:alpha:]]+\)/, '')
     temp_name.strip!
+
+    return Helper.get_custom_value("raw name '#{temp_name}' is too short. please enter a value:") if temp_name.length < 3
     
-    raise Helper::UnresolvedCase.new("raw name '#{temp_name}' is too short") if temp_name.length < 3
     # return 'OCT' if temp_name.match?(/31 de Octubre/)
     if temp_name.match?(/\d/)
       return Helper.get_custom_value("Name: '#{temp_name}' contains numbers, please enter a value:")

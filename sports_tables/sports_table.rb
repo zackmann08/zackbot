@@ -19,23 +19,28 @@ module SportsTable
     return text[0].upcase
   end
   
+  def parse_res_col_header(parsed_header)
+    return 'PR' unless parsed_header['promoted'].empty?
+    return 'Q' unless parsed_header['qualification'].empty?
+    return 'QR'
+  end
+  
   TEMPLATE_REGEX = 'fb cl2 team 2pts|fb cl2 team'
   ROW_REGEX = /(?=\{\{\s*(?:#{TEMPLATE_REGEX.to_s}))(\{\{(?>[^{}]++|\g<1>)*}})/i
+  EXTRA_COLUMNS_REGEX = /(?:\}\}\s*\|\|(.*)|\|\s*rowspan\s*=\s*\d*\s*\|(.*))/
   
   HEADER_REGEX = /(?=\{\{\s*(?:Fb[\s\_]cl[\s\_]header))(\{\{(?>[^{}]++|\g<1>)*}})/i
   FOOTER_REGEX = /(?=\{\{\s*(?:Fb[\s\_]cl[\s\_]footer))(\{\{(?>[^{}]++|\g<1>)*}})/i
   def parse_sports_table(text)
-    raise Helper::UnresolvedCase.new('Rowspan') if text.match?(/rowspan/i)
-    raise Helper::UnresolvedCase.new('Has extra column') if text.match?(/\|\|/)
+    raise Helper::UnresolvedCase.new('Colspan') if (text.match?(/colspan/i))
+    raise Helper::UnresolvedCase.new('Rowspan') if (text.match?(/rowspan/i) && !$allow_extra_columns)
+    raise Helper::UnresolvedCase.new('Has extra column') if (text.match?(/\|\|/) && !$allow_extra_columns)
     raise Helper::UnresolvedCase.new('Pipe at end of row') if text.match?(/\{\{fb.*\|\}/i)
     
     teams = text.scan(ROW_REGEX).map {|l| Team.new(l.first)}
     
     parsed_header = Helper.parse_template(text.match(HEADER_REGEX)[1])
     
-    # These indicate there is an extra column at the end
-    raise Helper::UnresolvedCase.new('promoted=y') unless parsed_header['promoted'].empty?
-    raise Helper::UnresolvedCase.new('qualification=y') unless parsed_header['qualification'].empty?
     parsed_footer = {}
     if text.match?(FOOTER_REGEX)
       parsed_footer = Helper.parse_template(text.match(FOOTER_REGEX)[1]) 
@@ -68,7 +73,7 @@ module SportsTable
      
     # Add the result header
     result = "{{#invoke:sports table|main|style=WDL
-|res_col_header=QR"
+|res_col_header=#{parse_res_col_header(parsed_header)}"
     result += "\n|winpoints=2" if text.match?(/fb cl2 team 2pts/i)
     result += "\n|winpoints=#{teams.first.wpts}" unless teams.first.wpts.empty?
     result += "\n|use_goal_ratio=#{parsed_header['gavg']}" unless parsed_header['gavg'].empty?
@@ -114,9 +119,25 @@ module SportsTable
         end
         result+= "\n|result#{index}=#{status}"
       else
-        raise Helper::UnresolvedCase('Should not be possible')
+        raise Helper::UnresolvedCase.new('Should not be possible')
       end     
     end
+
+    extra_columns = text.scan(EXTRA_COLUMNS_REGEX)
+
+    if $allow_extra_columns && extra_columns.size > 0
+      # extra_columns = extra_columns.uniq
+      custom_text_arr = result.scan(/\|text_[A-Z]*=/)
+      # puts custom_text_arr.inspect
+      # puts extra_columns.inspect
+      # raise Helper::UnresolvedCase.new('Extra Columns and Custom Text Array sizes do not mach (probably a blank cell)') unless extra_columns.size == custom_text_arr.size
+      custom_text_arr.each.with_index do |custom_text, index|
+        # next unless extra_columns[index]
+        result.sub!(custom_text, "#{custom_text}#{extra_columns[index][0]||extra_columns[index][1]}")
+      end
+    end
+    
+    raise Helper::UnresolvedCase.new('row has custom cell formatting') if (result.match?(/rowspan/) || result.match?(/style=b/))
 
     # Add the footer
     class_rules = '1) points; 2) goal difference; 3) number of goals scored.'
@@ -136,8 +157,8 @@ module SportsTable
   TABLE_REGEX = /(\{\{\s*(?:Fb[\s\_]cl[\s\_]header)[\w\W]*?(?:\|\}|\{\{\s*end\s*\}\}|#{FOOTER_REGEX.to_s}))/i
   
   def parse_sports_table_page(text)
-    text.gsub!(/\{\{he icon\}\}/, '@@@HE@@@')
-    text.gsub!(/\{\{uk icon\}\}/, '@@@UK@@@')
+    text.gsub!('=||', '=|')
+    text.gsub!(/\{\{([a-z]{2})\sicon\}\}/, '@@@\1@@@')
     tables = []
     
     Timeout.timeout(5) do
@@ -152,8 +173,7 @@ module SportsTable
       result = parse_sports_table(table)
       text.sub!(table, result)
     end
-    text.gsub!('@@@HE@@@', '{{he icon}}')
-    text.gsub!('@@@UK@@@', '{{uk icon}}')
+    text.gsub!(/@{3}([a-z]{2})@{3}/, '{{\1 icon}}')
     if text.match?(/\|hth_/)
       ans = Helper.get_custom_value("Has footnotes will you resolve manually?")
       raise Helper::UnresolvedCase.new('Has footnotes')  unless ans == 'Y'

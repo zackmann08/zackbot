@@ -1,0 +1,7 @@
+# TODO
+- Figure out which of the special cases the table is in terms of the extra column
+- Grab those and then loop through their values appending them to the matching 'text_ABC' param
+
+# TODO
+- parse the {{fb cl header|sort=y|promoted=y}} to determine the value for res_col_header
+- the default is QR

@@ -18,9 +18,10 @@ client.log_in ENV['USERNAME'], ENV['PASSWORD']
 # ALL pages in category
 url = 'https://petscan.wmflabs.org/?psid=6716390&format=json'
 
-titles = Helper.get_wmf_pages(url)
+# titles = Helper.get_wmf_pages(url)
 # titles.reverse!
 
+# $allow_extra_columns = true
 puts titles.size
 titles.each do |title|
 
@@ -60,6 +61,6 @@ titles.each do |title|
   # puts "waiting: "
   # continue = gets
   # puts continue
-  sleep 7 + rand(5)
+  sleep 10 + rand(5)
 end
 puts 'DONE!'
