@@ -1,46 +1,41 @@
 require 'mediawiki_api'
 require 'HTTParty'
 require 'timeout'
-require '../helper'
 require 'uri'
 require 'colorize'
 require 'json'
-require '../sports_tables/sports_table'
+require_relative 'japanese_episodes'
+require_relative '../helper'
 # encoding: utf-8
-include SportsTable
+include Generic
 
+SKIPS = [
+    
+]
 
 Helper.read_env_vars(file = '../vars.csv')
 
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
-url = 'https://petscan.wmflabs.org/?psid=7144400&format=json'
+url = 'https://petscan.wmflabs.org/?psid=7216137&format=json'
 
 titles = Helper.get_wmf_pages(url)
-# titles.reverse!
 
-$allow_extra_columns = true
-$allow_manual_checks = false
 puts titles.size
 titles.each do |title|
-
+  next if SKIPS.include?(title)
   puts title.colorize(:blue)
   text = client.get_wikitext(title).body
   text.force_encoding('UTF-8')
   old = text.dup
   begin
-    text.gsub!(/(\{\{fb.*)\|\}\}/i, "\\1}}")
-    text = parse_sports_table_page(text).strip
+    text = parse_text(text)
   rescue Helper::NoTemplatesFound
     Helper.print_message('Template not found on page')
     next
   rescue Helper::UnresolvedCase => e
     Helper.print_link(title)
-    Helper.print_message("Hit an unresolved case: #{e}")
-    next
-  rescue Timeout::Error => e
-    Helper.print_link(title)
-    Helper.print_message("Timeout error: #{e}")
+    Helper.print_message('Hit an unresolved case')
     next
   rescue Encoding::CompatibilityError => e
     Helper.print_message('Compatibility Error')
@@ -53,13 +48,16 @@ titles.each do |title|
     Helper.print_message('NO CHANGE')
     next
   end
+  
+  summary = 'converting to use [[Template:Episode list]] per [[Wikipedia:Templates_for_discussion/Log/2018_August_27#Template:Japanese_episode_list]]'
+  # summary = 'cleaning up and replacing deprecated parameters'
 
-  client.edit(title: title, text: text, summary: 'converting to use [[Module:Sports table]]')
+  client.edit(title: title, text: text, summary: summary)
   Helper.page_history(title)
   puts ' - success'.colorize(:green)
   # puts "waiting: "
   # continue = gets
   # puts continue
-  sleep 10 + rand(5)
+  sleep 10 + rand(8)
 end
 puts 'DONE!'

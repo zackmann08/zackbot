@@ -152,6 +152,7 @@ class Helper
   end
 
   def self.get_custom_value(prompt)
+    raise UnresolvedCase.new('Skipping') unless $allow_manual_checks
     # raise UnresolvedCase.new('Skipping request for custom value')
     puts prompt.colorize(:red)
     puts '"X" will raise error'.colorize(:red)

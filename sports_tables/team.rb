@@ -84,7 +84,7 @@ class Team
   
   #TODO: What if the name is a flag template? {{fb|USA}}
   def self.parse_raw_name(name)
-    puts name
+    # puts name
     name.gsub!(/'{3}/, '')
     # puts name
     if name.match?(LINK_REGEX)
@@ -97,9 +97,9 @@ class Team
   end
   
   SINGLE_WORD_REGEX = /^[[:alpha:]]*$/
-  DUAL_WORD_REGEX = /^([[[:punct:]][[:alpha:]]]+)\s+([[[:punct:]][[:alpha:]]]+)$/
+  DUAL_WORD_REGEX = /^([[[:punct:]][[:alpha:]]]+)[\s\-]+([[[:punct:]][[:alpha:]]]+)$/
   MULTI_WORD_REGEX = /^([[[:punct:]][[:alpha:]]]+)\s+([[[:punct:]][[:alpha:]]]+)\s+([[[:punct:]][[:alpha:]]]+).*$/
-  FLAG_REGEX = /^\{\{(?:fb|fbw|flag)\|([A-Z]{3})\}\}$/i
+  FLAG_REGEX = /^\{\{(?:fb|fbw|flag|futsal)\|([A-Z]{3})\}\}$/i
   def self.parse_name(name)
     
     temp_name = name.gsub(/\([[:alpha:]]+\)/, '')
@@ -107,7 +107,7 @@ class Team
 
     return Helper.get_custom_value("raw name '#{temp_name}' is too short. please enter a value:") if temp_name.length < 3
     
-    # return 'OCT' if temp_name.match?(/31 de Octubre/)
+    return 'OCT' if temp_name.match?(/de Octubre/)
     if temp_name.match?(/\d/)
       return Helper.get_custom_value("Name: '#{temp_name}' contains numbers, please enter a value:")
     end

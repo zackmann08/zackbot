@@ -57,8 +57,12 @@ class Country
   PLAIN_TEXT = /[A-Za-z\s]+/
   
   def parse_name!
-    @ioc = 'AAA'
-    return
+    # @ioc = 'AAA'
+    # return
+    if raw_name.match?(/{{GamesName|SOG/i)
+      @ioc = 'AAA'
+      return
+    end
     return if raw_name.nil?
     if raw_name.match?(/\(([A-Z]{3})\)/)
       @ioc = raw_name.match(/\(([A-Z]{3})\)/)[1]
@@ -110,27 +114,32 @@ class Country
     raise InvalidIoc.new(ioc) unless ioc.match?(/^[A-Z]{3}$/) || ioc.match?(/^\d+$/)
     @template = 'flagteam' if (@template && (@template.match?(/flagicon/i) || @template.strip.downcase == 'flagu'  || @template.strip.downcase == 'flag' || @template.strip.downcase == 'flagcountry'))
     @name_param = ''
-    @name_param = "{{#{@template}|#{@ioc}}}" if (@template && !@event && @template != template)
-    @name_param = "{{#{@template}|#{@ioc}|#{@event}}}" if (@template && @event && @event != event)
-    @name_param = "{{#{@template}|#{@ioc}|#{@event}|#{@version}}}" if (@version && @template && @event)
-    @name_param = '' if @name_param.match?(/\{\{flagcountry\|[A-Z]{3}\}\}/)
-    @name_param = '' if @name_param.match?(/\{\{flagteam\|[A-Z]{3}\}\}/)
-    @name_param = '{{flagteam|SFR Yugoslavia}}' if @ioc == 'SFR'
-    @name_param = '{{flagteam|FR Yugoslavia}}' if @ioc == 'FRY'
-    @name_param = "''#{@raw_name.delete("'").strip}''" if @raw_name.include?("''")
-    @name_param = @raw_name.strip if @ioc.match?(/([A-Z])\1\1/)
-    @name_param = '{{flagteam|Gotland}}' if @ioc == 'GOT'
-    @name_param = '{{flagteam|Menorca}}' if @ioc == 'MEN'
-    @name_param = '{{flagteam|Saint Helena}}' if @ioc == 'SHN'
-    @name_param = @raw_name if ioc.match?(/^\d+$/)
-    # @name_param = @raw_name.gsub('}(', '} (') if @raw_name.include?('(')
-    @name_param = @raw_name.gsub(/\}\}/, '}} ')
+    # @name_param = "{{#{@template}|#{@ioc}}}" if (@template && !@event && @template != template)
+    # @name_param = "{{#{@template}|#{@ioc}|#{@event}}}" if (@template && @event && @event != event)
+    # @name_param = "{{#{@template}|#{@ioc}|#{@event}|#{@version}}}" if (@version && @template && @event)
+    # @name_param = '' if @name_param.match?(/\{\{flagcountry\|[A-Z]{3}\}\}/)
+    # @name_param = '' if @name_param.match?(/\{\{flagteam\|[A-Z]{3}\}\}/)
+    # @name_param = '{{flagteam|SFR Yugoslavia}}' if @ioc == 'SFR'
+    # @name_param = '{{flagteam|FR Yugoslavia}}' if @ioc == 'FRY'
+    # @name_param = "''#{@raw_name.delete("'").strip}''" if @raw_name.include?("''")
+    # @name_param = @raw_name.strip if @ioc.match?(/([A-Z])\1\1/)
+    # @name_param = '{{flagteam|Gotland}}' if @ioc == 'GOT'
+    # @name_param = '{{flagteam|Menorca}}' if @ioc == 'MEN'
+    # @name_param = '{{flagteam|Saint Helena}}' if @ioc == 'SHN'
+    # @name_param = @raw_name if ioc.match?(/^\d+$/)
+    # # @name_param = @raw_name.gsub('}(', '} (') if @raw_name.include?('(')
+    # @name_param = @raw_name.gsub(/\}\}/, '}} ')
     # @name_param = @raw_name.gsub('}[', '} [') if @raw_name.include?('/')
-    # @name_param = @raw_name.gsub('}[', '} [') if @raw_name.include?('[')
+    @name_param = @raw_name.gsub('}[', '} [') if @raw_name.include?('[')
     # @name_param = @raw_name.gsub(/\}\|\s*\d+/, '}')
 
-    @name_param = "{{GamesSport|#{@raw_name.match(AT_THE)[1]}|Format=d}}" if @raw_name.match?(AT_THE)
-    # @name_param = "{{GamesSporrt|#{@raw_name}|Format=d}}" 
+    # @name_param = "{{GamesSport|#{@raw_name.match(AT_THE)[1]}|Format=d}}" if @raw_name.match?(AT_THE)
+    # @name_param = "{{GamesSport|#{@raw_name.match(/\[\[(?:.*\|)?(.*)\]\]/)[1]}|Format=d}}" if @raw_name.match?(/\[\[(?:.*\|)?(.*)\]\]/) 
+    # @name_param = "{{GamesSport|#{@raw_name}|Format=d}}" 
+    # @name_param = "{{GamesSport|Athletics|Format=d}}" 
+    @name_param = @raw_name if @name_param.empty?
+    
+    @name_param.gsub!('25px]] [[','')
     
     note_param = ''
     note_param = @raw_row.match(/(\{\{efn[^}]*\}\})/)[1] if @raw_row.match?(/(\{\{efn[^}]*\}\})/)

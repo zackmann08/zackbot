@@ -12,39 +12,56 @@ include Generic
 
 # converting to use [[Template:Infobox broadcasting network]] per [[Wikipedia:Templates_for_discussion/Log/2018_November_16#Template:Infobox_ITV_franchisee]]
 text = <<~TEXT
-{{Infobox college sports rivalry
-| name = Big Game
-| team1_image = California Golden Bears logo.svg
-| team2_image = Stanford Cardinal logo.svg
-| team1 = [[California Golden Bears football|California Golden Bears]]
-| team2 = [[Stanford Cardinal football|Stanford Cardinal]]
-| total_meetings = 121
-| series_record = {{Plainlist|class=nowrap|
-* Stanford leads, 64–46–11 ({{winning percentage|64|46|11}})
-* At Berkeley: Stanford leads, 28–21–6
-* At Stanford: Stanford leads, 31–21–1
-* At San Francisco: Stanford leads, 5–4–4
-* Home vs. visitor: 56–54–11
-}} <!--updated through 2018 season-->
-| first_meeting_date = March 19, 1892
-| first_meeting_result = Stanford 14, California 10 
-| last_meeting_date = December 1, 2018
-| last_meeting_result = Stanford 23, California 13
-| next_meeting_date = November 23, 2019
-| largest_win_margin = Stanford, 63–13 (2013)
-| longest_win_streak = Stanford, 9 (2010–present)
-| current_win_streak = Stanford, 9 (2010–present)
-| trophy = [[Stanford Axe]]
-| map_location = San Francisco Bay Area
-| map_label1 = '''[[Stanford University|Stanford]]'''
-| map_label1_position = bottom
-| map_mark1 =
-| coordinates1 = {{coord|37.434444|-122.161111|display=inline}}
-| map_label2 = '''[[University of California, Berkeley|Cal]]'''
-| map_label2_position = top
-| map_mark2 = Blue pog.svg   
-| coordinates2 = {{coord|37.871111|-122.250833|display=inline}}
-| map_caption = Locations of the two universities in the [[San Francisco Bay Area|Bay Area]]
+{{Infobox themed area
+| name         = Tomorrowland
+| logo         = Tomorrowland logo.svg
+| logo_width   = 
+| image        = DL tomorrowland entrance at night.jpg
+| image_width  = 250px
+| caption      = Disneyland's Tomorrowland at Night 
+| theme        = [[Future]] and [[outer space]]
+| park         = [[Disneyland]]
+| coordinates  = 
+| status       = Operating
+| opened       = July 17, 1955
+|
+| replaced     = 
+| replacement  = 
+| park2        = [[Magic Kingdom]]
+| coordinates2 = 
+| status2      = Operating
+| opened2      = October 1, 1971
+| closed2      = 
+| replaced2    = 
+| replacement2 = 
+| park3        = [[Tokyo Disneyland]]
+| coordinates3 = 
+| status3      = Operating
+| opened3      = April 15, 1983
+| closed3      = 
+| replaced3    = 
+| replacement3 = 
+| park4        = [[Disneyland Park (Paris)]]
+| coordinates4 = 
+| status4      = Operating (as Discoveryland)
+| opened4      = April 12, 1992
+| closed4      = 
+| replaced4    = 
+| replacement4 = 
+| park5        = [[Hong Kong Disneyland]]
+| coordinates5 = 
+| status5      = Operating
+| opened5      = September 12, 2005
+| closed5      = 
+| replaced5    = 
+| replacement5 = 
+| park6        = [[Shanghai Disneyland Park]]
+| coordinates6 = 
+| status6      = Operating
+| opened6      = June 16, 2016
+| closed6      = 
+| replaced6    = 
+| replacement6 = 
 }}
 TEXT
 

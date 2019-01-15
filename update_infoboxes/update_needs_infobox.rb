@@ -15,7 +15,8 @@ SKIPS = [
     'Bernd Jakubowski',
     'Karl-Heinz Marotzke',
     'Spalding v Gamage',
-    'St. Johns Light'
+    'St. Johns Light',
+    'Going Back to My Roots'
 ]
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
@@ -38,7 +39,7 @@ titles = Helper.get_wmf_pages(url)
 TALK_PAGE = /\|\s*(?:needs-infobox|infoboxneeded|infobox|needs-cultivar-infobox|no-infobox|ibox)\s*=\s*[^\}\|]*/
 INFOBOX = /\{\{[\s\w\n]*infobox/i
 #75090 
-start = 34500
+start = 0
 # count = 0
 titles.drop(start).each_with_index do |title, index|
   # break if count>100

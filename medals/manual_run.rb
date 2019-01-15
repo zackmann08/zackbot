@@ -10,19 +10,21 @@ end
 string = <<~TEXT
 {| {{MedalTable|type=Sport}}
 |-
-|align=left| {{GamesSport|Athletics|Format=d}} || 2 || 2 || 1 || 5
+|align=left| {{GamesSport|Sailing|Format=d}} || 2 || 0 || 0 || 2
 |-
-|align=left| {{GamesSport|Swimming|Format=d}} || 2 || 0 || 1 || 3
+|align=left| {{GamesSport|Tennis|Format=d}} || 1 || 3 || 3 || 7
 |-
-|align=left| {{GamesSport|Boxing|Format=d}} || 0 || 0 || 2 || 2
+|align=left| {{GamesSport|Polo|Format=d}} || 1 || 1 || 1 || 3
 |-
-|align=left| {{GamesSport|Fencing|Format=d}} || 0 || 0 || 1 || 1
+|align=left| {{GamesSport|Athletics|Format=d}} || 1 || 1 || 0 || 2
 |-
-|align=left| {{GamesSport|Taekwondo|Format=d}} || 0 || 0 || 1 || 1
+|align=left| {{GamesSport|Rowing|Format=d}} || 1 || 0 || 0 || 1
 |-
-|align=left| {{GamesSport|Wrestling|Format=d}} || 0 || 0 || 1 || 1
+|align=left| {{GamesSport|Tug of war|Format=d}} || 1 || 0 || 0 || 1
 |-
-! Total !! 4 !! 2 !! 7 !! 13
+|align=left| {{GamesSport|Fencing|Format=d}} || 1 || 0 || 0 || 1
+|-
+! Total !! 8 !! 5 !! 4 !! 17
 |}
 
 TEXT

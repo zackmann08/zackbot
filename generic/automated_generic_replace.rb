@@ -13,12 +13,11 @@ SKIPS = [
     
 ]
 
-
 Helper.read_env_vars(file = '../vars.csv')
 
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
-url = 'https://petscan.wmflabs.org/?psid=6754166&format=json'
+url = 'https://petscan.wmflabs.org/?psid=7234654&format=json'
 
 titles = Helper.get_wmf_pages(url)
 
@@ -50,7 +49,8 @@ titles.each do |title|
     next
   end
   
-  summary = 'converting to use [[Template:Infobox sports rivalry]] per [[Wikipedia:Templates_for_discussion/Log/2015_July_7#2015_July_7]]'
+  summary = 'converting to use [[Template:Infobox amusement park]]'
+  # summary = 'cleaning up and replacing deprecated parameters'
 
   client.edit(title: title, text: text, summary: summary)
   Helper.page_history(title)
@@ -58,6 +58,6 @@ titles.each do |title|
   # puts "waiting: "
   # continue = gets
   # puts continue
-  sleep 10 + rand(5)
+  sleep 10 + rand(8)
 end
 puts 'DONE!'
