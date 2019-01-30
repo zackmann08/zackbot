@@ -4,7 +4,7 @@ require 'timeout'
 require 'uri'
 require 'colorize'
 require 'json'
-require_relative 'generic'
+require_relative 'planetbox'
 require_relative '../helper'
 # encoding: utf-8
 include Generic
@@ -17,7 +17,7 @@ Helper.read_env_vars(file = '../vars.csv')
 
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
-url = 'https://petscan.wmflabs.org/?psid=7345932&format=json'
+url = 'https://petscan.wmflabs.org/?psid=7390292&format=json'
 
 titles = Helper.get_wmf_pages(url)
 puts titles.size
@@ -48,13 +48,13 @@ titles.each do |title|
     next
   end
 
-  summary = 'converting to use [[Template:Infobox comics character]] per [[Wikipedia:Templates_for_discussion/Log/2018_November_8#Template:Infobox_pulps_character]]'
+  summary = 'converting to use [[Template:Infobox planet]] per [[Wikipedia:Templates_for_discussion/Log/2018_November_27#Template:Planetbox_begin]]'
   
   client.edit(title: title, text: text, summary: summary)
   Helper.page_history(title)
   puts ' - success'.colorize(:green)
-  # puts "waiting: "
-  # continue = gets
-  # puts continue
-  sleep 10 + rand(5)
+  puts "waiting: "
+  continue = gets
+  puts continue
+  # sleep 10 + rand(5)
 end

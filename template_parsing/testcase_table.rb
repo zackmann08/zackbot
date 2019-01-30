@@ -2,7 +2,7 @@
 require 'mediawiki_api'
 require 'HTTParty'
 require 'timeout'
-require './helper'
+require '../helper'
 require 'uri'
 require 'colorize'
 require 'json'

@@ -21,7 +21,9 @@ SKIPS = [
     'A Latin Dictionary',
     'The Recruit (novel)',
     'Ru (novel)',
-    'A Little Girl in Old Pittsburg'
+    'A Little Girl in Old Pittsburg',
+    'James Robert Smith (author)',
+    'Jolanta Antas'
 ]
 START = 0
 URL = "https://petscan.wmflabs.org/?psid=6028563&format=json"
@@ -100,8 +102,8 @@ titles.drop(START).each_with_index do |title, index|
 
   image_url = nil
   if @isbn
-    image_url = get_google_books(@isbn)
-    image_url = get_open_library(@isbn) if image_url.nil?
+    # image_url = get_google_books(@isbn)
+    # image_url = get_open_library(@isbn) if image_url.nil?
     image_url = get_archive_org(@isbn) if image_url.nil?
     next if image_url.nil?
   # elsif @oclc

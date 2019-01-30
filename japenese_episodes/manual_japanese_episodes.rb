@@ -12,16 +12,33 @@ include Generic
 
 # converting to use [[Template:Infobox broadcasting network]] per [[Wikipedia:Templates_for_discussion/Log/2018_November_16#Template:Infobox_ITV_franchisee]]
 text = <<~TEXT
-
+{| class="wikitable" style="width:98%;"
+|-
+! style="width: 4%;" | No.
+! Episode title
+! style="width: 20%;" | Original air date
+|-
 {{Japanese episode list
- |EpisodeNumber=2
- |EpisodeNumber2=
- |EnglishTitle=WIRED PRISONER
- |RomajiTitle=Wired Prisφner
- |KanjiTitle=
- |OriginalAirDate={{Start date|2011|2|25}} (sale date)
- |ShortSummary=
+| EpisodeNumber   = 1
+| EnglishTitle    = Encounter
+| OriginalAirDate = {{Start date|2001|10|4}}
 }}
+{{Japanese episode list
+| EpisodeNumber   = 2
+| EnglishTitle    = Farewell
+| OriginalAirDate = {{Start date|2001|10|4}}
+}}
+{{Japanese episode list
+| EpisodeNumber   = 3
+| EnglishTitle    = Notice
+| OriginalAirDate = {{Start date|2001|11|3}}
+}}
+{{Japanese episode list
+| EpisodeNumber   = 4
+| EnglishTitle    = Presence
+| OriginalAirDate = {{Start date|2001|11|3}}
+}}
+|}
 
 TEXT
 

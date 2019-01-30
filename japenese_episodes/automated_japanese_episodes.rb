@@ -19,8 +19,8 @@ client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
 url = 'https://petscan.wmflabs.org/?psid=7216137&format=json'
 
-titles = Helper.get_wmf_pages(url)
-
+titles = Helper.get_wmf_pages(url).reverse
+# titles = ['User:Zackmann08/sandbox']
 puts titles.size
 titles.each do |title|
   next if SKIPS.include?(title)

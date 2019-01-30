@@ -28,20 +28,20 @@ module Generic
       params = Helper.parse_template(template)
       params.default = nil
 
-      puts params.inspect
-      puts params['EpisodeNumber2'].nil?
+      # puts params.inspect
+      # puts params.inspect
+      # puts params['EpisodeNumber2'].nil?
       
       # ['KanjiTitle', 'RomajiTitle'].each do |param|
       #   raise Helper::UnresolvedCase.new(param) if (params[param] && !params[param].empty?)
       # end
       result = "{{Episode list"
       
-      result += "\n| EpisodeNumber   = #{params['EpisodeNumber']}" unless params['EpisodeNumber'].empty?
-      result += "\n| EpisodeNumber2  = #{params['EpisodeNumber2']}" unless params['EpisodeNumber2'].nil?
+      result += "\n| EpisodeNumber   = #{params['EpisodeNumber']}" unless (params['EpisodeNumber'].nil?||params['EpisodeNumber'].empty?)
       result += "\n| EpisodeNumber2  = #{params['EpisodeNumber2']}" unless params['EpisodeNumber2'].nil?
       result += "\n| Title           = #{params['EnglishTitle']}" unless params['EnglishTitle'].nil?
-      !!result += "\n| AltTitle        = #{params['EnglishTitle']}" unless params['EnglishTitle'].nil?
-      !!result += "\n| RAltTitle       = #{"&nbsp;({{Nihongo2|#{params['KanjiTitle']}}})" unless (params['KanjiTitle'].nil? || params['KanjiTitle'].empty?)}"
+      result += "\n| AltTitle        = #{params['RomajiTitle']}" unless (params['RomajiTitle'].nil? || params['RomajiTitle'].empty?)
+      result += "\n| RAltTitle       = #{"&nbsp;({{Nihongo2|#{params['KanjiTitle']}}})"}" unless (params['KanjiTitle'].nil? || params['KanjiTitle'].empty?)
       result += "\n| RTitle          = #{params['RTitle']}" unless params['RTitle'].nil?
       result += "\n| Aux1            = #{params['Aux1']}" unless params['Aux1'].nil?
       result += "\n| DirectedBy      = #{params['DirectedBy']}" unless params['DirectedBy'].nil?
@@ -57,15 +57,6 @@ module Generic
       result += "\n| TopColor        = #{params['TopColor']}" unless params['TopColor'].nil?
       
       result += "\n}}"
-      
-      result2 = "{{Episode list
-| EpisodeNumber   = #{params['EpisodeNumber']}
-| EpisodeNumber2  = #{params['EpisodeNumber2']}
-| Title           = #{params['EnglishTitle']}
-| AltTitle        = #{"''#{params['RomajiTitle']}''" unless (params['RomajiTitle'].nil? || params['RomajiTitle'].empty?)}
-| RAltTitle       = #{"&nbsp;({{Nihongo2|#{params['KanjiTitle']}}})" unless (params['KanjiTitle'].nil? || params['KanjiTitle'].empty?)}
-
-}}"
       
       result.gsub!('<nowiki>', '')
       result.gsub!('</nowiki>', '')
