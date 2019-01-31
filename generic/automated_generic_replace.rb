@@ -17,7 +17,7 @@ Helper.read_env_vars(file = '../vars.csv')
 
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
-url = 'https://petscan.wmflabs.org/?psid=7345932&format=json'
+url = 'https://petscan.wmflabs.org/?psid=7412408&format=json'
 
 titles = Helper.get_wmf_pages(url)
 puts titles.size
@@ -48,7 +48,7 @@ titles.each do |title|
     next
   end
 
-  summary = 'converting to use [[Template:Infobox comics character]] per [[Wikipedia:Templates_for_discussion/Log/2018_November_8#Template:Infobox_pulps_character]]'
+  summary = 'converting to use [[Template:Infobox sports draft]] per [[Wikipedia:Templates_for_discussion/Log/2019_January_15#Template:Infobox_CFL_Draft]]'
   
   client.edit(title: title, text: text, summary: summary)
   Helper.page_history(title)
@@ -56,5 +56,5 @@ titles.each do |title|
   # puts "waiting: "
   # continue = gets
   # puts continue
-  sleep 10 + rand(5)
+  sleep 8 + rand(5)
 end
