@@ -8,7 +8,7 @@ require 'uri'
 require 'colorize'
 require 'json'
 text = <<~TEXT
-Name | Image | Image_size | alt | Nickname | Coach | Association | Colors | First year | Titles | Runners-up | Best | Entries | European Titles | European Runners-up | European Best | Asian Titles | Asian Runners-up | Asian Best      
+ name | other_names | image | sampleimage | image_size | image_alt | caption | series | founded | founder | leader | capital | homeworld | base_of_operations | kind | official_language | language | currency | flagship | anthem | religion | firstapp | creator | distinctions | races | actor | footnotes       
 TEXT
 
 text.strip!

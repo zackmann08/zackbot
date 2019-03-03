@@ -11,6 +11,8 @@ require 'fileutils'
 require 'open-uri'
 require 'googlebooks'
 require 'clipboard'
+require 'cgi'
+
 # encoding: utf-8
 
 Dir[File.dirname(__FILE__) + '/helpers/*.rb'].each do |helper|
@@ -48,11 +50,30 @@ class Helper
     end
     
     results = @content["*"].first['a']['*'].map do |i|
-      i["title"].gsub('_', ' ')
+      # i["title"].gsub('_', ' ')
+      i['nstext']+':'+i["title"].gsub('_', ' ')
     end
     raise NoResults.new(url) if results.empty?
     results
-  end  
+  end
+  
+  def self.get_transclusions(template)
+    # puts "https://en.wikipedia.org/w/api.php?action=query&format=json&tilimit=500&prop=transcludedin&titles=#{CGI.escape(template)}"
+    begin
+      Timeout.timeout(120) do
+        @content = HTTParty.get("https://en.wikipedia.org/w/api.php?action=query&format=json&tilimit=500&prop=transcludedin&titles=#{CGI.escape(template)}")
+      end
+    rescue Timeout::Error
+      puts 'ERROR: Took longer than 120 seconds to get content Script aborting.'
+      exit(0)
+    end
+    
+    return [] if @content["query"]['pages'].first[1]['transcludedin'].nil?
+    results = @content["query"]['pages'].first[1]['transcludedin'].map do |i|
+      i["title"]
+    end
+  end
+  
   # 
   # def self.get_category_pages(category)
   #   category = 'Category:' + category unless category.start_with?('Category:')
@@ -123,8 +144,10 @@ class Helper
   
   # ARGS = /\s*([\w\s\-]*)=\s*(.*)\n*(?:\}\})?/
   ARGS = /\s*([\w\s\-]*)=\s*([\w\W]*)\n*(?:\}\})?/
-  def self.parse_template(text)
-    text.gsub!(/<!--.*-->/, '')
+  def self.parse_template(text, skip_cleanup = false)
+    text.force_encoding('UTF-8')
+    # text.gsub!(/<!--.*-->/, '') unless skip_cleanup
+    text = text.gsub(/<!--.*-->/, '')
     text = text.strip[2..-3]
     # puts "##{text}#"
     results = Hash.new('')

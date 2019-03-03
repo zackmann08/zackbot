@@ -4,23 +4,27 @@ require 'timeout'
 require 'uri'
 require 'colorize'
 require 'json'
-require_relative 'japanese_episodes'
+require_relative 'volleyball'
 require_relative '../helper'
 # encoding: utf-8
 include Generic
 
 SKIPS = [
-    
+    'Volleyballbox',
+    'Volleyballbox2',
+    'Volleyballbox2/doc',
+    'Volleyballbox/doc',
+    'Volleyballbox/testcases'
 ]
 
 Helper.read_env_vars(file = '../vars.csv')
 
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
-url = 'https://petscan.wmflabs.org/?psid=7561956&format=json'
+url = 'https://petscan.wmflabs.org/?psid=7913519&format=json'
 
 titles = Helper.get_wmf_pages(url)
-# titles = ['User:Zackmann08/sandbox']
+# titles = ['Greece at the 2004 Summer Olympics']
 puts titles.size
 titles.each do |title|
   next if SKIPS.include?(title)
@@ -35,29 +39,28 @@ titles.each do |title|
     next
   rescue Helper::UnresolvedCase => e
     Helper.print_link(title)
-    Helper.print_message('Hit an unresolved case')
+    Helper.print_message(e)
     next
   rescue Encoding::CompatibilityError => e
     Helper.print_message('Compatibility Error')
     next
   end
-
+  
   # puts text.colorize(:red)
   if text == old
     Helper.print_link(title)
     Helper.print_message('NO CHANGE')
     next
   end
-  
-  summary = 'converting to use [[Template:Episode list]] per [[Wikipedia:Templates_for_discussion/Log/2018_August_27#Template:Japanese_episode_list]]'
-  # summary = 'cleaning up and replacing deprecated parameters'
 
+  summary = 'converting to use [[Template:Volleyballbox]] per [[Wikipedia:Templates_for_discussion/Log/2019_February_5#Template:Volleyballbox]] (step 2 of 2)'
+  
   client.edit(title: title, text: text, summary: summary)
   Helper.page_history(title)
   puts ' - success'.colorize(:green)
   # puts "waiting: "
   # continue = gets
   # puts continue
-  sleep 10 + rand(8)
+  sleep 8 + rand(5)
 end
 puts 'DONE!'

@@ -1,9 +1,32 @@
 require 'rspec'
-require_relative './planetbox'
+require_relative './anetbox'
 
 
 include Generic
 describe 'planetbox' do
+  describe 'check_for_plus_minus' do
+    it 'works for a reused reference' do
+      val = '2.10 ± 0.02<ref name="Gregory2010"/>'
+      expect(check_for_plus_minus(val)).to eq(['2.10|±|0.02','<ref name="Gregory2010"/>'])
+    end
+    
+    it 'works for a full reference' do
+      val = '2.10 ± 0.02<ref>
+{{cite web
+ |title=Planets Table
+ |url=http://exoplanets.org/planets.shtml
+ |work=[[Catalog of Nearby Exoplanets]]
+ |accessdate=2008-10-04
+| archiveurl= https://web.archive.org/web/20080921002236/http://exoplanets.org/planets.shtml| archivedate= 21 September 2008 <!--DASHBot-->| deadurl= no}}</ref>'
+      expect(check_for_plus_minus(val)).to eq(['2.10|±|0.02','<ref>
+{{cite web
+ |title=Planets Table
+ |url=http://exoplanets.org/planets.shtml
+ |work=[[Catalog of Nearby Exoplanets]]
+ |accessdate=2008-10-04
+| archiveurl= https://web.archive.org/web/20080921002236/http://exoplanets.org/planets.shtml| archivedate= 21 September 2008 <!--DASHBot-->| deadurl= no}}</ref>'])
+    end    
+  end
   describe 'parse_mass' do
     it 'works for just jupiter' do
       params = {'planet_mass' => '123'}
@@ -24,6 +47,15 @@ describe 'planetbox' do
     end
   end
   describe 'parse_apastron' do
+    
+    it 'works for AU plus/minus' do
+      params = {'apastron' => '2.10 ± 0.02<ref name="Gregory2010"/>'}
+      expect(parse_apastron(params)).to eq('{{convert|2.10|±|0.02|AU|km|abbr=on}}<ref name="Gregory2010"/>')
+    end
+    it 'works for GM plus/minus' do
+      params = {'apastron_gm' => '123±12.123'}
+      expect(parse_apastron(params)).to eq('{{convert|123|±|12.123|Gm|abbr=on}}')
+    end
     it 'works for just AU' do
       params = {'apastron' => '123'}
       expect(parse_apastron(params)).to eq('{{convert|123|AU|km|abbr=on}}')
@@ -36,6 +68,11 @@ describe 'planetbox' do
     it 'works for both' do
       params = {'apastron' => '123', 'apastron_gm' => '789'}
       expect(parse_apastron(params)).to eq('{{convert|123|AU|km|abbr=on}}')
+    end
+    
+    it 'works for not a number' do
+      params = {'apastron' => '4.0{{±|0.2|0.5}}'}
+      expect(parse_apastron(params)).to eq('4.0{{±|0.2|0.5}} [[astronomical unit|AU]]')
     end
     it 'works for neither' do
       params = {}
@@ -63,17 +100,18 @@ describe 'planetbox' do
   end
   
   describe 'parse_gravity' do
+    
     it 'works for just gravity' do
-      params = {'gravity' => '123'}
-      expect(parse_gravity(params)).to eq('{{convert|123|m/s2|lk=on|abbr=on}}')
+      params = {'gravity' => '123±987'}
+      expect(parse_gravity(params)).to eq('{{convert|123|±|987|m/s2|lk=on|abbr=on}}')
     end
     it 'works for just earth' do
-      params = {'gravity_earth' => '123'}
-      expect(parse_gravity(params)).to eq('123 [[g-force|g]]')
+      params = {'gravity_earth' => '123 ± 789'}
+      expect(parse_gravity(params)).to eq('123 ± 789 [[g-force|g]]')
     end
     it 'works for both' do
-      params = {'gravity' => '123', 'gravity_earth' => '789'}
-      expect(parse_gravity(params)).to eq('{{convert|123|m/s2|lk=on|abbr=on}}<br>789 [[g-force|g]]')
+      params = {'gravity' => '123±345', 'gravity_earth' => '789 ± 54'}
+      expect(parse_gravity(params)).to eq('{{convert|123|±|345|m/s2|lk=on|abbr=on}}<br>789 ± 54 [[g-force|g]]')
     end
     it 'works for neither' do
       params = {}

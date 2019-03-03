@@ -53,8 +53,8 @@ titles.each do |title|
   client.edit(title: title, text: text, summary: summary)
   Helper.page_history(title)
   puts ' - success'.colorize(:green)
-  puts "waiting: "
-  continue = gets
-  puts continue
-  # sleep 10 + rand(5)
+  # puts "waiting: "
+  # continue = gets
+  # puts continue
+  sleep 10 + rand(5)
 end

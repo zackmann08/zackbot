@@ -1,7 +1,7 @@
 require 'mediawiki_api'
 require 'HTTParty'
 require 'timeout'
-require_relative '../helper'
+require_relative '../../helper'
 require 'uri'
 require 'colorize'
 require 'json'

@@ -4,8 +4,8 @@
 require '../helper'
 
 # File format: <page_name>@!@<url_for_image>
-images = <<-TEXT
-Lair (novel)@!@https://images-na.ssl-images-amazon.com/images/I/71MTnN%2BwrML.jpg
+images = <<-TEXT 
+aaaa@!@bbbb
 TEXT
 
 Helper.read_env_vars(file = '../vars.csv')

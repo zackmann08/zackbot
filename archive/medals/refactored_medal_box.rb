@@ -1,6 +1,6 @@
 require 'Clipboard'
 require '../helper'
-require_relative './country'
+require_relative './untry'
 require_relative './table'
 
 string = <<~TEXT

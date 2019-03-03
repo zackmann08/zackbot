@@ -41,7 +41,9 @@ INFOBOX = /\{\{[\s\w\n]*infobox/i
 #75090 
 start = 0
 # count = 0
+puts titles.size
 titles.drop(start).each_with_index do |title, index|
+  title = title.gsub(/[A-Z]*:(.*)/i, '\1')
   # break if count>100
   next if SKIPS.include?(title)
   puts "#{start +index} - #{title}".colorize(:magenta) if index%100 == 0

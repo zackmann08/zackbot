@@ -23,7 +23,11 @@ SKIPS = [
     'Ru (novel)',
     'A Little Girl in Old Pittsburg',
     'James Robert Smith (author)',
-    'Jolanta Antas'
+    'Jolanta Antas',
+    'A Rough Passage',
+    'Abi Titmuss',
+    'Ashokavadana',
+    'Dorothy Rabinowitz'
 ]
 START = 0
 URL = "https://petscan.wmflabs.org/?psid=6028563&format=json"

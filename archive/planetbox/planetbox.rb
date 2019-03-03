@@ -1,43 +1,74 @@
 # encoding: utf-8
-require_relative '../helper'
+require_relative '../../helper'
 
 module Generic
   
-  def check_for_plus_minus(param)
-    raise Helper::UnresolvedCase.new("±") if (param && param.include?('±'))
-    raise Helper::UnresolvedCase.new("not a number") if (param && param.match?(/[^0-9\.\,]/))
-    
+  REF_REGEX = /<ref>*[\w\W]*?(?:\/>|<\/ref>)/i
+
+  def check_for_not_a_number(param)
+    ref = ''
+    val = (param && param.include?('±')) ? param.gsub(/\s*±\s*/, '|±|') : param
+    if val && val.match?(REF_REGEX)
+      ref = val.match(REF_REGEX)[0]
+      val = val.gsub!(REF_REGEX, '')
+    end
+    return param if (val && val.match?(/[^0-9\.\,±\|]/))
+    nil
   end
+  def check_for_plus_minus(param)
+    ref = ''
+    val = (param && param.include?('±')) ? param.gsub(/\s*±\s*/, '|±|') : param
+    if val && val.match?(REF_REGEX)
+      ref = val.match(REF_REGEX)[0]
+      val = val.gsub!(REF_REGEX, '')
+    end
+    raise Helper::UnresolvedCase.new(param) if (val && val.match?(/[^0-9\.\,±\|]/))
+    [val, ref]
+  end
+  # def check_for_plus_minus(param)
+  #   raise Helper::UnresolvedCase.new("not a number") if (param && param.match?(/[^0-9\.\,]/))
+  #   return param.gsub!(/\s*±\s*/, '|±|') if (param && param.include?('±'))
+  #   raise Helper::UnresolvedCase.new("±") if (param && param.include?('±'))
+  #   
+  #   param
+  # end
   
   def parse_apastron(params)
-    check_for_plus_minus(params['apastron'])
-    check_for_plus_minus(params['apastron_gm'])
-    return "{{convert|#{params['apastron']}|AU|km|abbr=on}}" if params['apastron']
-    return "{{convert|#{params['apastron_gm']}|Gm|abbr=on}}" if params['apastron_gm']
+    return "#{check_for_not_a_number(params['apastron'])} [[astronomical unit|AU]]" if check_for_not_a_number(params['apastron'])
+    return "#{check_for_not_a_number(params['apastron_gm'])} [[gigameter|Gm]]" if check_for_not_a_number(params['apastron_gm'])
+    apastron = check_for_plus_minus(params['apastron'])
+    apastron_gm = check_for_plus_minus(params['apastron_gm'])
+    return "{{convert|#{apastron[0]}|AU|km|abbr=on}}#{apastron[1]}" if params['apastron']
+    return "{{convert|#{apastron_gm[0]}|Gm|abbr=on}}#{apastron_gm[1]}" if params['apastron_gm']
     return ''
   end
   def parse_periastron(params)
-    check_for_plus_minus(params['periastron'])
-    check_for_plus_minus(params['periastron_gm'])
-    return "{{convert|#{params['periastron']}|AU|km|abbr=on}}" if params['periastron']
-    return "{{convert|#{params['periastron_gm']}|Gm|abbr=on}}" if params['periastron_gm']
+    return "#{check_for_not_a_number(params['periastron'])} [[astronomical unit|AU]]" if check_for_not_a_number(params['periastron'])
+    return "#{check_for_not_a_number(params['periastron_gm'])} [[gigameter|Gm]]" if check_for_not_a_number(params['periastron_gm'])
+    periastron = check_for_plus_minus(params['periastron'])
+    periastron_gm =check_for_plus_minus(params['periastron_gm'])
+    return "{{convert|#{periastron[0]}|AU|km|abbr=on}}#{periastron[1]}" if params['periastron']
+    return "{{convert|#{periastron_gm[0]}|Gm|abbr=on}}#{periastron_gm[1]}" if params['periastron_gm']
     return ''
   end
 
   def parse_radius(params)
-    check_for_plus_minus(params['radius_megameter'])
+    return "#{check_for_not_a_number(params['radius_megameter'])} [[Megametre|Mm]]" if check_for_not_a_number(params['radius_megameter'])
+    radius_megameter = check_for_plus_minus(params['radius_megameter'])
     values = []
     values << "#{params['planet_radius']} {{Jupiter radius|link=y}}" if params['planet_radius']
     values << "#{params['radius_earth']} {{Earth radius|link=y}}" if params['radius_earth']
-    values << "{{convert|#{params['radius_megameter']}|Mm|lk=on|abbr=on}}" if params['radius_megameter']
+    values << "{{convert|#{radius_megameter[0]}|Mm|lk=on|abbr=on}}#{radius_megameter[1]}" if params['radius_megameter']
     return values.join('<br>')
   end
   
   def parse_semimajor(params)
-    check_for_plus_minus(params['semimajor'])
-    check_for_plus_minus(params['semimajor_gm'])
-    return "{{convert|#{params['semimajor']}|AU|km|abbr=on}}" if params['semimajor']
-    return "{{convert|#{params['semimajor_gm']}|Gm|abbr=on}}" if params['semimajor_gm']
+    return "#{check_for_not_a_number(params['semimajor'])} [[astronomical unit|AU]]" if check_for_not_a_number(params['semimajor'])
+    return "#{check_for_not_a_number(params['semimajor_gm'])} [[gigameter|Gm]]" if check_for_not_a_number(params['semimajor_gm'])
+    semimajor = check_for_plus_minus(params['semimajor'])
+    semimajor_gm = check_for_plus_minus(params['semimajor_gm'])
+    return "{{convert|#{semimajor[0]}|AU|km|abbr=on}}#{semimajor[1]}" if params['semimajor']
+    return "{{convert|#{semimajor_gm[0]}|Gm|abbr=on}}#{semimajor_gm[1]}" if params['semimajor_gm']
     return "#{params['semimajor_mas']} [[Minute and second of arc|mas]]" if params['semimajor_mas']
     return ''
   end
@@ -51,13 +82,13 @@ module Generic
   end
   
   def parse_density(params)
-    check_for_plus_minus(params['density'])
-    check_for_plus_minus(params['density_cgs'])
-    density = params['density']
-    density_cgs = params['density_cgs']
+    return "#{check_for_not_a_number(params['density'])} [[kilogram|kg]] [[cubic metre|m<sup>−3</sup>]]" if check_for_not_a_number(params['density'])
+    return "#{check_for_not_a_number(params['density_cgs'])} [[gram|g]] [[cubic centimetre|cm<sup>−3</sup>]]" if check_for_not_a_number(params['density_cgs'])
+    density= check_for_plus_minus(params['density'])
+    density_cgs = check_for_plus_minus(params['density_cgs'])
 
-    return "{{convert|#{density}|kg/m3|lk=on|abbr=on}}" if density
-    return "{{convert|#{density_cgs}|g/cm3|lk=on|abbr=on}}" if density_cgs
+    return "{{convert|#{density[0]}|kg/m3|lk=on|abbr=on}}#{density[1]}" if params['density']
+    return "{{convert|#{density_cgs[0]}|g/cm3|lk=on|abbr=on}}#{density_cgs[1]}" if params['density_cgs']
     return ''
   end
   def parse_mass(params)
@@ -73,16 +104,15 @@ module Generic
     ''
   end
   def parse_gravity(params)
-    check_for_plus_minus(params['gravity'])
-    check_for_plus_minus(params['gravity_earth'])
-    gravity = params['gravity']
+    return "#{check_for_not_a_number(params['gravity'])} [[Metre per second squared|m/s²]] " if check_for_not_a_number(params['gravity'])
+    gravity = check_for_plus_minus(params['gravity'])
     earth_g = params['gravity_earth']
     
-    if gravity
-      return "{{convert|#{gravity}|m/s2|lk=on|abbr=on}}<br>#{earth_g} [[g-force|g]]" if earth_g
-      return "{{convert|#{gravity}|m/s2|lk=on|abbr=on}}"
+    if gravity[0] && !gravity[0].empty?
+      return "{{convert|#{gravity[0]}|m/s2|lk=on|abbr=on}}#{gravity[1]}<br>#{earth_g} [[g-force|g]]" if earth_g
+      return "{{convert|#{gravity[0]}|m/s2|lk=on|abbr=on}}#{gravity[1]}"
     elsif earth_g
-      return "#{earth_g} [[g-force|g]]" 
+      return "#{earth_g} [[g-force|g]]"
     end
     ''
   end
@@ -90,6 +120,11 @@ module Generic
   TEMPLATES = ["Planetbox begin", "Planetbox image", "Planetbox star", "Planetbox star detail|Planetbox star detail", "Planetbox separation", "Planetbox orbit", "Planetbox character", "Planetbox discovery", "Planetbox catalog", "Planetbox reference", "Planetbox end"]
   def parse_text(text)
     text.force_encoding('UTF-8')
+    # planetary_radius = text.scan(/(?=\{\{\s*(?:Planetary radius))(\{\{(?>[^{}]++|\g<1>)*}})/i).flatten
+    # raise Helper::UnresolvedCase.new("Contains Planetary radius template") if planetary_radius.size > 1
+    # 
+    # text.gsub!(planetary_radius.first,'') unless planetary_radius.nil? || planetary_radius.empty?
+    #  
     params = {}
     params.default = nil
     TEMPLATES.each do |temp|
@@ -97,8 +132,16 @@ module Generic
       raise Helper::UnresolvedCase.new("More than 1 template (#{temp})") if templates.size > 1
       next if templates.size == 0
       template = templates.first
+      new_params = Helper.parse_template(template, true)
+
+      # puts "###########"
+      # puts template
+      # puts "###########"
+      text.gsub!(template, 'ZWTEMP@@@@@')
+      # puts "$$$$$"
+      # puts text
+      # puts "$$$$$"
       
-      new_params = Helper.parse_template(template)
       # puts new_params.inspect
       if temp == 'Planetbox character'
         new_params['planet_radius'] = new_params.delete('radius')
@@ -118,11 +161,9 @@ module Generic
       end
       
       # puts "!!!#{temp}"
-      puts new_params.keys & params.keys
-      raise Helper::UnresolvedCase.new("Duplicate params") unless (new_params.keys & params.keys).empty?
-      
-      # template.gsub!(/<!--[\w\W]*?-->/,'')
-      text.sub!(template, 'ZWTEMP@@@@@')
+      # puts new_params.keys & params.keys
+      raise Helper::UnresolvedCase.new("Duplicate params: #{new_params.keys & params.keys}") unless (new_params.keys & params.keys).empty?
+     
       params.merge!(new_params)
     end
     
@@ -134,14 +175,8 @@ module Generic
       
     result = "{{Infobox planet
 | name                     = #{params['name']}
-| symbol                   = 
 | image                    = #{params['image']}
-| image_size               = 
-| image_alt                = 
 | caption                  = #{params['caption']}
-| background               = 
-| bgcolour                 = 
-| label_width              = 
 <!-- DISCOVERY           -->
 | discoverer               = #{params['discoverers']}
 | discovery_site           = #{params['discovery_site']}
@@ -185,7 +220,7 @@ module Generic
 | semi-amplitude           = #{params['semi-amp']}
 | satellite_of             = 
 | satellites               = 
-| star                     = #{params['star']}
+| star                     = #{params['star_name']}
 | allsatellites            = 
 | tisserand                = 
 <!-- PHYS CHARS          --> 
@@ -234,7 +269,7 @@ module Generic
     
     
     # # This will strip un-used parmeters
-    # # result.gsub!(/\|.*\=\s*\n/, '')
+    result.gsub!(/\|.*\=\s*\n/, '')
        
     text = text.sub(/(?:ZWTEMP@@@@@\s*\n)+/i, result)
     text.gsub!(/<ref name="Gaia DR2".*\n*/, '')
