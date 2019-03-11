@@ -27,7 +27,8 @@ SKIPS = [
     'A Rough Passage',
     'Abi Titmuss',
     'Ashokavadana',
-    'Dorothy Rabinowitz'
+    'Dorothy Rabinowitz',
+    'Guillaume Morissette'
 ]
 START = 0
 URL = "https://petscan.wmflabs.org/?psid=6028563&format=json"

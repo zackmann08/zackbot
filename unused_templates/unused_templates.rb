@@ -12,7 +12,8 @@ puts templates['rows'].count
 
 result = "{{User:Zackmann08/unused templates/notes}}
 ==Results (updated at #{Time.now.strftime("%Y-%m-%d %H:%M:%S PST")})==
-{{User:Zackmann08/unused navbox}}\n"
+{{User:Zackmann08/unused navbox}}
+Current count: #{templates['rows'].count}\n"
 result += '{| class="wikitable plainlinks sortable"'
 result += "\n|-\n! Template\n! Created on\n! Transclusions link\n"
 templates['rows'].each do |template|
@@ -29,6 +30,6 @@ client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
 
 USERNAME = 'Zackmann08'
-client.edit(title: "User:Zackmann08/unused navbox templates", text: result, summary: 'Updating with new report data')
+client.edit(title: "User:Zackmann08/unused templates", text: result, summary: 'Updating with new report data')
 
 puts 'done'

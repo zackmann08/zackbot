@@ -13,15 +13,15 @@ client.log_in ENV['USERNAME'], ENV['PASSWORD']
 url = 'https://petscan.wmflabs.org/?psid=7866572&format=json'
 
 
-text = <<~TEXT 
-*{{tfdl|EHF_Player_of_the_Year_Women|2019 February 23|section=Template:EHF Player of the Year Women}}
-*{{tfdl|EHF_Player_of_the_Year_Men|2019 February 23|section=Template:EHF Player of the Year Men}}
+text = <<~TEXT
+*{{tfdl|PBB/9639|2019 February 27|section=Template:PBB}}
 TEXT
+
 
 Template = Struct.new(:name, :regex, :tfd)
 templates = []
 
-PARTS_REGEX=/\*\s*\{\{tfdl\|([\w\s_'\-\–]*)\|([\w\s]*)\|section=([\w\s':]*)\}\}/i
+PARTS_REGEX=/\*\s*\{\{tfdl\|([\w\s_'\-\–\/]*)\|([\w\s]*)\|section=([\w\s':]*)\}\}/i
 text.each_line do |line|
   matches = line.match(PARTS_REGEX)
   templates << Template.new("Template:#{matches[1].gsub('_', ' ')}", matches[1].gsub('_', ' '), "Wikipedia:Templates for discussion/Log/#{matches[2]}##{matches[3]}")
@@ -62,9 +62,9 @@ templates.each do |template|
     page = client.get_wikitext(title).body
     page.force_encoding('UTF-8')
     old = page.dup
-    
-    page.scan(/(?=\{\{\s*(?:#{template[:regex]}))(\{\{(?>[^{}]++|\g<1>)*}})/i).flatten.each do |temp|
-      page.gsub!(/#{temp}\n*/, '')
+        
+    page.scan(/(?=\{\{\s*(?:#{Regexp.escape(template[:regex])}))(\{\{(?>[^{}]++|\g<1>)*}})/i).flatten.each do |temp|
+      page.gsub!(/#{Regexp.escape(temp)}\n*/, '')
     end
 
     if page == old

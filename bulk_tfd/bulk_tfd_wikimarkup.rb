@@ -12,53 +12,24 @@ require 'json'
 
 
 text = <<~TEXT
-British Columbia provincial election, 2013/Burnaby-Edmonds	2017-05-16	transclusions
-British Columbia provincial election, 2013/Delta South	2017-05-16	transclusions
-British Columbia provincial election, 2013/Fort Langley-Aldergrove	2017-05-16	transclusions
-British Columbia provincial election, 2013/Fraser-Nicola	2017-05-16	transclusions
-British Columbia provincial election, 2013/Juan de Fuca	2017-05-16	transclusions
-British Columbia provincial election, 2013/Kamloops-North Thompson	2017-05-16	transclusions
-British Columbia provincial election, 2013/Kamloops-South Thompson	2017-05-16	transclusions
-British Columbia provincial election, 2013/Kootenay East	2017-05-16	transclusions
-British Columbia provincial election, 2013/Kootenay West	2017-05-16	transclusions
-British Columbia provincial election, 2013/Langley	2017-05-16	transclusions
-British Columbia provincial election, 2013/Maple Ridge-Mission	2017-05-16	transclusions
-British Columbia provincial election, 2013/Nelson-Creston	2017-05-16	transclusions
-British Columbia provincial election, 2013/New Westminster	2017-05-16	transclusions
-British Columbia provincial election, 2013/North Coast	2017-05-16	transclusions
-British Columbia provincial election, 2013/North Island	2017-05-16	transclusions
-British Columbia provincial election, 2013/North Vancouver-Lonsdale	2017-05-16	transclusions
-British Columbia provincial election, 2013/North Vancouver-Seymour	2017-05-16	transclusions
-British Columbia provincial election, 2013/Peace River North	2017-05-16	transclusions
-British Columbia provincial election, 2013/Peace River South	2017-05-16	transclusions
-British Columbia provincial election, 2013/Penticton	2017-05-16	transclusions
-British Columbia provincial election, 2013/Port Coquitlam	2017-05-16	transclusions
-British Columbia provincial election, 2013/Port Moody-Coquitlam	2017-05-16	transclusions
-British Columbia provincial election, 2013/Powell River-Sunshine Coast	2017-05-16	transclusions
-British Columbia provincial election, 2013/Prince George-Mackenzie	2017-05-16	transclusions
-British Columbia provincial election, 2013/Prince George-Valemount	2017-05-16	transclusions
-British Columbia provincial election, 2013/Richmond Centre	2017-05-16	transclusions
-British Columbia provincial election, 2013/Richmond East	2017-05-16	transclusions
-British Columbia provincial election, 2013/Saanich North and the Islands	2017-05-16	transclusions
-British Columbia provincial election, 2013/Saanich South	2017-05-16	transclusions
-British Columbia provincial election, 2013/Shuswap	2017-05-16	transclusions
-British Columbia provincial election, 2013/Skeena	2017-05-16	transclusions
-British Columbia provincial election, 2013/Surrey-Cloverdale	2017-05-16	transclusions
-British Columbia provincial election, 2013/Surrey-Fleetwood	2017-05-16	transclusions
-British Columbia provincial election, 2013/Surrey-Newton	2017-05-16	transclusions
-British Columbia provincial election, 2013/Surrey-Panorama	2017-05-16	transclusions
-British Columbia provincial election, 2013/Surrey-Tynehead	2017-05-16	transclusions
-British Columbia provincial election, 2013/Surrey-Whalley	2017-05-16	transclusions
-British Columbia provincial election, 2013/Vancouver-Fairview	2017-05-16	transclusions
-British Columbia provincial election, 2013/Vancouver-Hastings	2017-05-16	transclusions
-British Columbia provincial election, 2013/Vancouver-Kensington	2017-05-16	transclusions
-British Columbia provincial election, 2013/Vancouver-Kingsway	2017-05-16	transclusions
-British Columbia provincial election, 2013/Vancouver-Mount Pleasant	2017-05-16	transclusions
-British Columbia provincial election, 2013/Vancouver-Quilchena	2017-05-16	transclusions
-British Columbia provincial election, 2013/Vernon-Monashee	2017-05-16	transclusions
-British Columbia provincial election, 2013/West Vancouver-Capilano	2017-05-16	transclusions
-British Columbia provincial election, 2013/West Vancouver-Sea to Sky	2017-05-16	transclusions
-British Columbia provincial election, 2013/Westside-Kelowna
+Periodic table (actinides in the periodic table)	2012-08-31	transclusions
+Periodic table (d-block)	2012-05-27	transclusions
+Periodic table (eka-superactinides location)	2012-10-23	transclusions
+Periodic table (electron configuration lanthanides)	2014-02-20	transclusions
+Periodic table (f-block)	2012-05-27	transclusions
+Periodic table (metalloid)/Periodic table	2014-03-08	transclusions
+Periodic table (metals and nonmetals)/into image	2014-09-18	transclusions
+Periodic table (navbox isotopes)	2005-06-13	transclusions
+Periodic table (p-block)	2012-05-27	transclusions
+Periodic table (p-block trend)	2012-07-01	transclusions
+Periodic table (period 5)	2012-08-29	transclusions
+Periodic table (period 6)	2012-05-29	transclusions
+Periodic table (period 7)	2012-05-29	transclusions
+Periodic table (post-transition metals)	2012-06-01	transclusions
+Periodic table (s-block)	2012-05-27	transclusions
+Periodic table (standard atomic weight)	2012-05-04	transclusions
+Periodic table (superactinides)	2012-06-05	transclusions
+Periodic table (superactinides location)
 TEXT
 text += "\n"
 result = ''
