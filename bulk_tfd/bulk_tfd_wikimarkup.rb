@@ -12,24 +12,21 @@ require 'json'
 
 
 text = <<~TEXT
-Periodic table (actinides in the periodic table)	2012-08-31	transclusions
-Periodic table (d-block)	2012-05-27	transclusions
-Periodic table (eka-superactinides location)	2012-10-23	transclusions
-Periodic table (electron configuration lanthanides)	2014-02-20	transclusions
-Periodic table (f-block)	2012-05-27	transclusions
-Periodic table (metalloid)/Periodic table	2014-03-08	transclusions
-Periodic table (metals and nonmetals)/into image	2014-09-18	transclusions
-Periodic table (navbox isotopes)	2005-06-13	transclusions
-Periodic table (p-block)	2012-05-27	transclusions
-Periodic table (p-block trend)	2012-07-01	transclusions
-Periodic table (period 5)	2012-08-29	transclusions
-Periodic table (period 6)	2012-05-29	transclusions
-Periodic table (period 7)	2012-05-29	transclusions
-Periodic table (post-transition metals)	2012-06-01	transclusions
-Periodic table (s-block)	2012-05-27	transclusions
-Periodic table (standard atomic weight)	2012-05-04	transclusions
-Periodic table (superactinides)	2012-06-05	transclusions
-Periodic table (superactinides location)
+C.D. Primeiro de Agosto (basketball) 2001-2002	2013-05-29	transclusions
+C.D. Primeiro de Agosto (basketball) 2012-2013	2013-04-27	transclusions
+C.D. Primeiro de Agosto (basketball) 2013-2014	2013-11-17	transclusions
+C.D. Primeiro de Agosto (basketball) Women's 2012-2013	2013-06-10	transclusions
+C.D. Primeiro de Agosto (basketball) Women's 2013-2014	2013-11-17	transclusions
+C.D. Primeiro de Agosto (basketball) Women's 2014-2015	2014-09-10	transclusions
+C.D. Primeiro de Agosto (football) 1977	2014-11-24	transclusions
+C.D. Primeiro de Agosto (football) 2015	2015-07-12	transclusions
+C.D. Primeiro de Agosto (handball) Women's 2011-2012	2013-06-20	transclusions
+C.D. Primeiro de Agosto (handball) Women's 2012-2013	2013-06-10	transclusions
+C.D. Primeiro de Agosto (handball) Women's 2013-2014	2014-02-27	transclusions
+C.D. Primeiro de Agosto (volleyball) 2011-2012	2014-03-16	transclusions
+C.D. Primeiro de Agosto (volleyball) Women's 2011-2012	2014-03-16	transclusions
+C.D. Primeiro de Agosto 2002 Africa Clubs Champions Cup 1st Place	2013-05-18	transclusions
+C.D. Primeiro de Agosto 2012-13
 TEXT
 text += "\n"
 result = ''

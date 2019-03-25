@@ -14,7 +14,7 @@ url = 'https://petscan.wmflabs.org/?psid=7866572&format=json'
 
 
 text = <<~TEXT
-*{{tfdl|PBB/9639|2019 February 27|section=Template:PBB}}
+*{{tfdl|ICC_Team_of_the_Year|2019 March 14|section=Template:ICC Team of the Year}}
 TEXT
 
 

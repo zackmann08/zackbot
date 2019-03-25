@@ -14,24 +14,36 @@ url = 'https://petscan.wmflabs.org/?psid=8161954&format=json'
 
 TEMPLATE_REGEX = 'OGol|Ogol|TheFinalBall player|Zerozero|Zerozero profile|TheFinalBall'
 titles = Helper.get_wmf_pages(url)
-# titles = ['User:Zackmann08/sandbox']
+# titles = ['Jean Batista']
 puts titles.size
+titles.reverse!
 titles.each do |title|
   # title = "Talk:#{title}"
   puts title.colorize(:blue)
   page = client.get_wikitext(title).body
   old = page.dup
   
-  if page.match?(/<ref.*?>\{\{(?:#{TEMPLATE_REGEX})/i)
-    Helper.print_link(title)
-    Helper.print_message('Has reference')
-    next
-  end
-
-  templates = page.scan(/(?=\{\{(?:#{TEMPLATE_REGEX}))(\{\{(?>[^{}]++|\g<1>)*}})/i).flatten
-  templates.each do |template|
-    page.gsub!(/\*\s*#{Regexp.escape(template)}\n?/, '')
-  end
+  # if page.match?(/<ref.+?>\{\{(?:#{TEMPLATE_REGEX})/i)
+  #   puts page.match(/<ref.+?>\{\{(?:#{TEMPLATE_REGEX})/i).inspect
+  #   Helper.print_link(title)
+  #   Helper.print_message('Has reference')
+  #   next
+  # end
+  
+  # templates = page.scan(/<ref>(?=\{\{(?:#{TEMPLATE_REGEX}))(\{\{(?>[^{}]++|\g<1>)*}})<\/ref>/i)
+  # templates.each do |template|
+  #   page.gsub!(template, '')
+  # end
+  # templates = page.scan(/<ref name=TFB>(?=\{\{(?:#{TEMPLATE_REGEX}))(\{\{(?>[^{}]++|\g<1>)*}})<\/ref>/i)
+  # templates.each do |template|
+  #   page.gsub!(template, '')
+  # end
+  # page.gsub!('<ref name=TFB/>', '')
+  # 
+  # templates = page.scan(/(?=\{\{(?:#{TEMPLATE_REGEX}))(\{\{(?>[^{}]++|\g<1>)*}})/i).flatten
+  # templates.each do |template|
+  #   page.gsub!(/\*\s*#{Regexp.escape(template)}\n?/, '')
+  # end
 
   if page == old
     Helper.print_link(title)

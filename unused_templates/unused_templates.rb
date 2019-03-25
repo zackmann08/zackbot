@@ -30,6 +30,6 @@ client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
 
 USERNAME = 'Zackmann08'
-client.edit(title: "User:Zackmann08/unused templates", text: result, summary: 'Updating with new report data')
+client.edit(title: "User:Zackmann08/unused navbox templates", text: result, summary: 'Updating with new report data')
 
 puts 'done'

@@ -17,7 +17,7 @@ Helper.read_env_vars(file = '../vars.csv')
 
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
-url = 'https://petscan.wmflabs.org/?psid=8130771&format=json'
+url = 'https://petscan.wmflabs.org/?psid=8369757&format=json'
 
 titles = Helper.get_wmf_pages(url)
 puts titles.size
@@ -48,7 +48,7 @@ titles.each do |title|
     next
   end
 
-  summary = 'converting to use [[Template:Infobox writer]] per [[Wikipedia:Templates_for_discussion/Log/2019_February_22#Template:Infobox_writer]]'
+  summary = 'converting to use [[Template:Infobox settlement]] per [[Wikipedia:Templates_for_discussion/Log/2019_March_4#Template:Infobox_South_African_town]] & [[Wikipedia:Templates_for_discussion/Log/2019_March_11#Template:Metadata_South_Africa]]'
   
   client.edit(title: title, text: text, summary: summary)
   Helper.page_history(title)
