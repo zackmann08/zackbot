@@ -70,8 +70,8 @@ client.log_in ENV['USERNAME'], ENV['PASSWORD']
 
 titles = []
 
-# CATEGORY = 'Category:Wikipedia articles with an infobox request'
-CATEGORY = 'Category:Highways articles needing infoboxes'
+CATEGORY = 'Category:Wikipedia articles with an infobox request'
+# CATEGORY = 'Category:Highways articles needing infoboxes'
 
 # response = client.query(
 #   list: 'categorymembers',
@@ -89,7 +89,7 @@ CATEGORY = 'Category:Highways articles needing infoboxes'
 #   puts "No category members found or error in request."
 # end
 
-titles = fetch_category_pages(client, CATEGORY, max_depth: 3)
+titles = fetch_category_pages(client, CATEGORY, max_depth: 4)
 
 INFOBOX = /\{\{[\s\w\n]*infobox/i
 
