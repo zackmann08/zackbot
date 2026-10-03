@@ -1,8 +1,7 @@
 require 'csv'
 require 'normalize_country'
-require 'HTTParty'
 require 'mediawiki_api'
-require 'HTTParty'
+require 'httparty'
 require 'timeout'
 require 'uri'
 require 'colorize'
@@ -84,10 +83,24 @@ class Helper
   # end
   
   def self.read_env_vars(file = 'vars.csv')
-    vars = CSV.read(file)
-    vars.each do |var, value|
-      ENV[var] = value
+    # 1. Check if running inside Toolforge's K8s directory or if tool account is active
+    if Dir.exist?('/workspace') || ENV['USER']&.start_with?('tools.')
+      puts "Toolforge environment detected. Skipping local CSV parsing."
+      return
     end
+
+    # 2. Local fallback logic (only runs on your computer)
+    puts 'Running locally'
+    if File.exist?(file)
+      vars = CSV.read(file)
+      vars.each do |var, value|
+        ENV[var] = value
+      end
+    else
+      puts "Warning: Local configuration file '#{file}' not found."
+    end
+  rescue => e
+    puts "Failed reading environment: #{e.message}"
   end
 
   def self.split_dep_vars(s) #team, years, split = "<br>", type = "coach")

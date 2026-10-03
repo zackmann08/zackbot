@@ -6,7 +6,7 @@
 # Get all the templates that I have created and then filter out the ones that are sandbox, etc. 
 
 require 'mediawiki_api'
-require 'HTTParty'
+require 'httparty'
 require 'timeout'
 require 'json'
 require './helper'

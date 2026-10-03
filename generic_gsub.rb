@@ -1,5 +1,5 @@
 require 'mediawiki_api'
-require 'HTTParty'
+require 'httparty'
 require 'timeout'
 require './helper'
 require 'uri'
