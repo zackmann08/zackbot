@@ -13,6 +13,7 @@ response = client.query(list: 'categorymembers', cmtitle: 'Category:Pages using 
   * `text.force_encoding('UTF-8')`
 
 # TODOs
+- Rewrite update_needs_infobox to use MW api to get category list.
 - Figure out how to capture links in a template if they include "|". 
   * I.E. "| name = [[John Smith|Johny boy]] | location = [[Utah]]" should capture all of the name and stop before location
   * Should be similar to the regex used for infoboxes {{}}

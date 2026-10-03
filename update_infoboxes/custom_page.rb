@@ -3,24 +3,40 @@ module CustomPage
   INFOBOX = /infobox/i
   def self.parse_page(full_text, title, infobox_regex)
     if full_text.match?(infobox_regex)
-      # Helper.print_message('HAS INFOBOX')
-      # Helper.print_link(title)
       return "Has Infobox"
     else
       return nil
     end
   end
   
-  NEEDS_INFOBOX = /\|\s*needs-infobox\s*=\s*[^\}\|]*/
-  INFOBOX_REQUEST = /\{\{(?:Infobox requested|Infobox missing|Infobox needed|Infobox requested|Infobox wanted|Need infobox|Needinfobox|Needs infobox|Noinfobox|Reqinfobox)\}\}/i
-  def self.parse_talk_page(talk_page_text,talk_page_regex)
-    if talk_page_text.match?(talk_page_regex)
-      return talk_page_text.gsub(talk_page_regex,'')
+  NEEDS_INFOBOX = /\|\s*needs-infobox\s*=\s*[^\}\|]*/im
+  INFOBOX_REQUEST = /\{\{(?:Infobox requested|Infobox missing|Infobox needed|Infobox wanted|Need infobox|Needinfobox|Needs infobox|Noinfobox|Reqinfobox)(?:\|[^}]+)?\s*\}\}/im
+  def self.parse_talk_page(talk_page_text) #, talk_page_regex)
+    matched = false
+    new_text = talk_page_text.dup
+
+    # Modern multi-line variant to strip the parameter flag even if it ends with a newline
+    # This addresses the problem where a line break breaks [^\}\|]*
+    # flexible_talk_regex = /\|\s*(?:needs-infobox|infoboxneeded|infobox|needs-cultivar-infobox|no-infobox|ibox)\s*=\s*[^}|]*\s*/im
+
+    # if new_text.match?(flexible_talk_regex)
+    #   new_text.gsub!(flexible_talk_regex, '')
+    #   matched = true
+    # end
+
+    if new_text.match?(INFOBOX_REQUEST)
+      new_text.gsub!(INFOBOX_REQUEST, '')
+      matched = true
     end
-    if talk_page_text.match?(INFOBOX_REQUEST)
-      return talk_page_text.gsub(INFOBOX_REQUEST, '')
+    if new_text.match?(NEEDS_INFOBOX)
+      new_text.gsub!(NEEDS_INFOBOX, '')
+      matched = true
     end
-    raise NeedsInfoboxNotFound unless talk_page_text.match?(talk_page_regex)
+
+    raise NeedsInfoboxNotFound unless matched
+
+    # Clean up excess empty spacing left over from removed elements
+    new_text.gsub(/\n{3,}/, "\n\n").strip
   end
 
 end

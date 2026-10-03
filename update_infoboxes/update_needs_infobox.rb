@@ -1,7 +1,7 @@
 require 'mediawiki_api'
 require 'HTTParty'
 require 'timeout'
-require '../helper'
+require '../helper.rb'
 require 'uri'
 require 'colorize'
 require_relative './custom_page'
@@ -21,46 +21,66 @@ SKIPS = [
 ]
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
-# client.log_in 'ZackBot', ENV['PASSWORD']
-url = 'https://petscan.wmflabs.org/?psid=5972779&format=json'
+# url = 'https://petscan.wmflabs.org/?psid=55556997&format=json'
 
-titles = Helper.get_wmf_pages(url)
-# # 
-# # File.open("contents.txt", "w+") do |f|
-# #   f.puts(titles)
-# # end
-# 
-# # text=File.open('contents.txt').read
-# # titles = text.split("\\n")
-# # puts titles.first
-# # puts text.inspect
-# 
-# titles = File.open('contents.txt').map{|line| line}
+titles = []
 
-TALK_PAGE = /\|\s*(?:needs-infobox|infoboxneeded|infobox|needs-cultivar-infobox|no-infobox|ibox)\s*=\s*[^\}\|]*/
+# CATEGORY = 'Category:Wikipedia articles with an infobox request'
+CATEGORY = 'Category:Architecture articles needing infoboxes'
+
+response = client.query(
+  list: 'categorymembers',
+  cmtitle: CATEGORY,
+  cmnamespace: '1',
+  cmlimit: 10000
+)
+
+if response.data && response.data['categorymembers']
+  members = response.data['categorymembers']
+  members.each do |member|
+    titles << member['title']
+  end
+else
+  puts "No category members found or error in request."
+end
+
 INFOBOX = /\{\{[\s\w\n]*infobox/i
-#75090 
-start = 0
+
+start = 150
 # count = 0
 puts titles.size
-titles.drop(start).each_with_index do |title, index|
-  title = title.gsub(/[A-Z]*:(.*)/i, '\1')
-  # break if count>100
+titles.drop(start).each_with_index do |raw_title, index|
+  sleep 0.5
+  # title = title.gsub(/[A-Z]*:(.*)/i, '\1')
+  if raw_title.start_with?('Talk:')
+    title = raw_title.sub(/^Talk:/, '')
+    talk_title = raw_title
+  else
+    title = raw_title
+    talk_title = "Talk:#{title}"
+  end
+
   next if SKIPS.include?(title)
   puts "#{start +index} - #{title}".colorize(:magenta) if index%100 == 0
   
+  # TODO: Check for client.get_wikitext(title).status == 429 showing a rate limit error
+  #       check for a possible 'retry-after' time?
+
+
   full_text = client.get_wikitext(title).body
   if CustomPage.parse_page(full_text, title, INFOBOX)
     talk_title = "Talk:#{title}"
     begin
       talk_page_text = client.get_wikitext(talk_title).body
-      new_text = CustomPage.parse_talk_page(talk_page_text,TALK_PAGE)
-      # client.edit(title: talk_title, text: new_text, summary: "page has an infobox ([[Wikipedia:Bots/Requests for approval/ZackBot 10]])")
-      client.edit(title: talk_title, text: new_text, summary: "page has an infobox")
-      # count += 1
-      puts "- success".colorize(:green)
-      # sleep 5 + rand(5)
+      new_text = CustomPage.parse_talk_page(talk_page_text)
+      client.edit(minor: true, title: talk_title, text: new_text, summary: "page has an infobox ([[Wikipedia:Bots/Requests_for_approval/ZackBot_10|ZackBot 10]])")
+      puts "- success - #{title}".colorize(:green)
     rescue CustomPage::NeedsInfoboxNotFound => e
+      puts e.message
+      puts e.backtrace
+      puts '#####'
+      puts talk_page_text
+      puts '#####'
       Helper.print_message('Raised: "NeedsInfoboxNotFound"')
       Helper.print_link(title)
       Helper.print_link(talk_title)

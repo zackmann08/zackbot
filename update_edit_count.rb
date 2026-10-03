@@ -43,41 +43,41 @@ puts "Getting count for #{USERNAME}"
 result = @content["query"]["users"][0]["editcount"]
 
 puts "Updating count to #{result}"
-client.edit(title: "User:#{USERNAME}/edit count", text: result)
+client.edit(title: "User:#{USERNAME}/count/edit", text: result)
 
-templates = get_content(TEMPLATES_URL)
-count = templates["pages"].reject!{ |page| 
-  (page['page_title'].include?('/doc')||
-      page['page_title'].include?('sandbox') ||
-      page['page_title'].include?('/testcase') 
-  )}.size
-puts "Updating template count to #{count}"
-client.edit(title: "User:#{USERNAME}/template count", text: count)
+# templates = get_content(TEMPLATES_URL)
+# count = templates["pages"].reject!{ |page| 
+#   (page['page_title'].include?('/doc')||
+#       page['page_title'].include?('sandbox') ||
+#       page['page_title'].include?('/testcase') 
+#   )}.size
+# puts "Updating template count to #{count}"
+# client.edit(title: "User:#{USERNAME}/template count", text: count)
 
-categories = get_content(CATEGORIES_URL)
-count = categories["counts"]["count"]
-puts "Updating category count to #{count}"
-client.edit(title: "User:#{USERNAME}/category count", text: count)
+# categories = get_content(CATEGORIES_URL)
+# count = categories["counts"]["count"]
+# puts "Updating category count to #{count}"
+# client.edit(title: "User:#{USERNAME}/category count", text: count)
 
-files = get_content(FILES_URL)
-count = files["counts"]["count"]
-puts "Updating file count to #{count}"
-client.edit(title: "User:#{USERNAME}/file count", text: count)
+# files = get_content(FILES_URL)
+# count = files["counts"]["count"]
+# puts "Updating file count to #{count}"
+# client.edit(title: "User:#{USERNAME}/file count", text: count)
 
-modules = get_content(MODULES_URL)
-count = modules["pages"].reject!{ |page|
-  (page['page_title'].include?('/doc')||
-      page['page_title'].include?('sandbox') ||
-      page['page_title'].include?('/testcase')
-  )}.size
-puts "Updating modules count to #{count}"
-client.edit(title: "User:#{USERNAME}/module count", text: count)
+# modules = get_content(MODULES_URL)
+# count = modules["pages"].reject!{ |page|
+#   (page['page_title'].include?('/doc')||
+#       page['page_title'].include?('sandbox') ||
+#       page['page_title'].include?('/testcase')
+#   )}.size
+# puts "Updating modules count to #{count}"
+# client.edit(title: "User:#{USERNAME}/module count", text: count)
 
 
-text = client.get_wikitext('Wikipedia:List of Wikipedians by number of edits/1–1000').body
-rank = text.scan(/(\d*)\s*\n*\|\s*\[\[User:Zackmann08\|Zackmann08\]\]/).flatten.first
-puts "Updating rank to #{rank}"
-client.edit(title: "User:#{USERNAME}/rank", text: rank)
+# text = client.get_wikitext('Wikipedia:List of Wikipedians by number of edits/1–1000').body
+# rank = text.scan(/(\d*)\s*\n*\|\s*\[\[User:Zackmann08\|Zackmann08\]\]/).flatten.first
+# puts "Updating rank to #{rank}"
+# client.edit(title: "User:#{USERNAME}/rank", text: rank)
 
 
 

@@ -33,7 +33,7 @@ class Helper
   end
 
   def self.get_client
-    Helper.read_env_vars(file = '../vars.csv')
+    Helper.read_env_vars(file = 'vars.csv')
     client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
     client.log_in ENV['USERNAME'], ENV['PASSWORD']
     client
