@@ -50,8 +50,7 @@ def fetch_category_pages(client, category_title, current_level: 1, max_depth: 3,
   all_pages
 end
 
-# EXAMPLE: pages = fetch_category_pages(client, CATEGORY, max_depth: 3)
-
+START_TIME = Time.now
 
 Helper.read_env_vars(file = './vars.csv')
 SKIPS = [
@@ -66,30 +65,22 @@ SKIPS = [
 ]
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
-# url = 'https://petscan.wmflabs.org/?psid=55556997&format=json'
 
 titles = []
 
-CATEGORY = 'Category:Wikipedia articles with an infobox request'
-# CATEGORY = 'Category:Highways articles needing infoboxes'
+# CATEGORY = 'Category:Wikipedia articles with an infobox request'
+CATEGORY = 'Category:Ethnic groups articles needing infoboxes'
 
-# response = client.query(
-#   list: 'categorymembers',
-#   cmtitle: CATEGORY,
-#   cmnamespace: '1',
-#   cmlimit: 10000
-# )
+pages = fetch_category_pages(client, CATEGORY, max_depth: 4)
 
-# if response.data && response.data['categorymembers']
-#   members = response.data['categorymembers']
-#   members.each do |member|
-#     titles << member['title']
-#   end
-# else
-#   puts "No category members found or error in request."
-# end
+sorted_titles = pages.map { |page| page['title'] }.sort!
 
-titles = fetch_category_pages(client, CATEGORY, max_depth: 4)
+report = "{{User:ZackBot/Header}}\n"
+report += ";Report on latest job start.\n"
+report += ":'''Job started at #{START_TIME.strftime("%D %H:%M")} and is looking at a total of #{pages.size} pages.'''\n"
+report += ":The parent category is set as {{cl|#{CATEGORY}}}"
+
+client.edit(title: 'User:ZackBot/Report', text: report, summary: "Updating report for start of run ([[Wikipedia:Bots/Requests_for_approval/ZackBot_10|ZackBot 10]])")
 
 INFOBOX = /\{\{[\s\w\n]*infobox/i
 
@@ -97,11 +88,9 @@ error_pages = []
 pages_edited = 0
 start = 0
 # count = 0
-puts titles.size
-titles.drop(start).each_with_index do |page, index|
-  raw_title = page['title']
-  sleep 0.5
-  # title = title.gsub(/[A-Z]*:(.*)/i, '\1')
+puts sorted_titles.size
+sorted_titles.drop(start).each_with_index do |raw_title, index|
+
   if raw_title.start_with?('Talk:')
     title = raw_title.sub(/^Talk:/, '')
     talk_title = raw_title
@@ -112,10 +101,6 @@ titles.drop(start).each_with_index do |page, index|
 
   next if SKIPS.include?(title)
   puts "#{start +index} - #{title}".colorize(:magenta) if index%100 == 0
-  
-  # TODO: Check for client.get_wikitext(title).status == 429 showing a rate limit error
-  #       check for a possible 'retry-after' time?
-
 
   full_text = client.get_wikitext(title).body
   if CustomPage.parse_page(full_text, title, INFOBOX)
@@ -141,10 +126,18 @@ titles.drop(start).each_with_index do |page, index|
   end
 end
 
+END_TIME = Time.now
+
+elapsed_seconds = END_TIME - START_TIME
+
+minutes, seconds = elapsed_seconds.to_i.divmod(60)
+hours, minutes = minutes.divmod(60)
+days, hours = hours.divmod(24)
+
 
 report = "{{User:ZackBot/Header}}\n"
 report += ";Report on latest job run.\n"
-report += ":'''Job ran at #{Time.now.utc.to_s} and edited a total of #{pages_edited} pages'''\n"
+report += ":'''Job finhed at #{END_TIME.strftime("%D %H:%M")}, took #{days}d #{hours}h #{minutes}m #{seconds}s and edited a total of #{pages_edited} pages'''\n"
 report += ":The parent category was set as {{cl|#{CATEGORY}}}"
 report += "\n\n=== Errors ===\n"
 if error_pages.empty?

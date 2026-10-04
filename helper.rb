@@ -73,24 +73,7 @@ class Helper
     end
   end
   
-  # 
-  # def self.get_category_pages(category)
-  #   category = 'Category:' + category unless category.start_with?('Category:')
-  #   
-  #   @content = HTTParty.get("https://en.wikipedia.org/w/api.php?action=query&format=json&list=categorymembers&cmtitle=#{URI::encode(category)}&cmlimit=500")
-  #   @content['query']['categorymembers'].map{ |member| member['title'].encode('utf-8') }
-  #   
-  # end
-  
   def self.read_env_vars(file = 'vars.csv')
-    # 1. Check if running inside Toolforge's K8s directory or if tool account is active
-    if Dir.exist?('/workspace') || ENV['USER']&.start_with?('tools.')
-      puts "Toolforge environment detected. Skipping local CSV parsing."
-      return
-    end
-
-    # 2. Local fallback logic (only runs on your computer)
-    puts 'Running locally'
     if File.exist?(file)
       vars = CSV.read(file)
       vars.each do |var, value|
