@@ -9,7 +9,7 @@ module CustomPage
     end
   end
   
-  NEEDS_INFOBOX = /\|\s*needs-infobox\s*=\s*[^\}\|]*/im
+  NEEDS_INFOBOX = /\|\s*(?:needs\-infobox|infoboxneeded|no\-infobox)\s*=\s*[^\}\|]*/im
   INFOBOX_REQUEST = /\{\{(?:Infobox requested|Infobox missing|Infobox needed|Infobox wanted|Need infobox|Needinfobox|Needs infobox|Noinfobox|Reqinfobox)(?:\|[^}]+)?\s*\}\}/im
   def self.parse_talk_page(talk_page_text) #, talk_page_regex)
     matched = false
