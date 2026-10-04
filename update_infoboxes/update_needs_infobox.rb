@@ -68,19 +68,18 @@ client.log_in ENV['USERNAME'], ENV['PASSWORD']
 
 titles = []
 
-# CATEGORY = 'Category:Wikipedia articles with an infobox request'
-CATEGORY = 'Category:Ethnic groups articles needing infoboxes'
+CATEGORY = 'Category:Wikipedia articles with an infobox request'
 
 pages = fetch_category_pages(client, CATEGORY, max_depth: 4)
 
 sorted_titles = pages.map { |page| page['title'] }.sort!
 
-report = "{{User:ZackBot/Header}}\n"
-report += ";Report on latest job start.\n"
-report += ":'''Job started at #{START_TIME.strftime("%D %H:%M")} and is looking at a total of #{pages.size} pages.'''\n"
-report += ":The parent category is set as {{cl|#{CATEGORY}}}"
+report_start = "{{User:ZackBot/Header}}\n"
+report_start += ";Report on latest job start.\n"
+report_start += ":'''Job started at #{START_TIME.strftime("%D %H:%M")} and is looking at a total of #{pages.size} pages.'''\n"
+report_start += ":The parent category is set as {{cl|#{CATEGORY}}}"
 
-client.edit(title: 'User:ZackBot/Report', text: report, summary: "Updating report for start of run ([[Wikipedia:Bots/Requests_for_approval/ZackBot_10|ZackBot 10]])")
+client.edit(title: 'User:ZackBot/Report', text: report_start, summary: "Updating report for start of run ([[Wikipedia:Bots/Requests_for_approval/ZackBot_10|ZackBot 10]])")
 
 INFOBOX = /\{\{[\s\w\n]*infobox/i
 
@@ -134,10 +133,9 @@ minutes, seconds = elapsed_seconds.to_i.divmod(60)
 hours, minutes = minutes.divmod(60)
 days, hours = hours.divmod(24)
 
-
 report = "{{User:ZackBot/Header}}\n"
 report += ";Report on latest job run.\n"
-report += ":'''Job finhed at #{END_TIME.strftime("%D %H:%M")}, took #{days}d #{hours}h #{minutes}m #{seconds}s and edited a total of #{pages_edited} pages'''\n"
+report += ":'''Job finished at #{END_TIME.strftime("%D %H:%M")}, took #{days}d #{hours}h #{minutes}m #{seconds}s and edited a total of #{pages_edited} pages'''\n"
 report += ":The parent category was set as {{cl|#{CATEGORY}}}"
 report += "\n\n=== Errors ===\n"
 if error_pages.empty?
