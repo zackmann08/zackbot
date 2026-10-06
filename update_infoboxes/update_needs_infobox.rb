@@ -53,16 +53,7 @@ end
 START_TIME = Time.now
 
 Helper.read_env_vars(file = './vars.csv')
-SKIPS = [
-    'Anthony Wagner',
-    'Tangle Lakes',
-    'Bernd Jakubowski',
-    'Karl-Heinz Marotzke',
-    'Spalding v Gamage',
-    'St. Johns Light',
-    'Going Back to My Roots',
-    'Pao v. Kleiner Perkins'
-]
+SKIPS = [ ]
 client = MediawikiApi::Client.new 'https://en.wikipedia.org/w/api.php'
 client.log_in ENV['USERNAME'], ENV['PASSWORD']
 
@@ -107,7 +98,7 @@ sorted_titles.drop(start).each_with_index do |raw_title, index|
     begin
       talk_page_text = client.get_wikitext(talk_title).body
       new_text = CustomPage.parse_talk_page(talk_page_text)
-      client.edit(minor: true, title: talk_title, text: new_text, summary: "page has an infobox ([[Wikipedia:Bots/Requests_for_approval/ZackBot_10|ZackBot 10]])")
+      client.edit(minor: true, title: talk_title, text: new_text, summary: "page has an infobox ([[Wikipedia:Bots/Requests_for_approval/ZackBot_10|ZackBot 10]] - [[User talk:ZackBot|report false positive]])")
       pages_edited += 1
       puts "- success - #{title}".colorize(:green)
     rescue CustomPage::NeedsInfoboxNotFound => e
